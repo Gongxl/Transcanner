@@ -44,6 +44,7 @@
         android:background="@android:color/transparent"/>
 
     <ImageButton
+        android:id="@+id/translate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerInside"
@@ -53,6 +54,7 @@
         android:background="@android:color/transparent"/>
 
     <ImageButton
+        android:id="@+id/time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerInside"
@@ -62,6 +64,7 @@
         android:background="@android:color/transparent"/>
 
     <ImageButton
+        android:id="@+id/location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerInside"
@@ -71,6 +74,7 @@
         android:background="@android:color/transparent"/>
 
     <ImageButton
+        android:id="@+id/share"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerInside"
