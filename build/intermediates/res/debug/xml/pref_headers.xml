@@ -15,4 +15,4 @@
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>
-<!-- From: file:/Users/Gongxl/AndroidStudioProjects/Transcanner/app/src/main/res/xml/pref_headers.xml -->
+<!-- From: file:/home/david/Projects/Android/Transcanner/app/src/main/res/xml/pref_headers.xml -->

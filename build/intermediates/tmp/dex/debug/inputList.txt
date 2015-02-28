@@ -1,5 +1,5 @@
-/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/classes/debug
-/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-a3876b1bb145dff5c2379b489dfed242241641c2.jar
-/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-4f1eaaff1e6764248d6d5291685c6794b2b4c68a.jar
-/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/pre-dexed/debug/classes-59d6ccf67a9f8822f58a3fc1564cb77148fbf441.jar
-/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/pre-dexed/debug/classes-e6a863673bb6c97aea3a6ce107affa7d3b256102.jar
+/home/david/Projects/Android/Transcanner/app/build/intermediates/classes/debug
+/home/david/Projects/Android/Transcanner/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-d044b7b0361083cf5a1bef016f0fd772e00d7de4.jar
+/home/david/Projects/Android/Transcanner/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-82af2858610835d722b5a38debb4a963e9b2275f.jar
+/home/david/Projects/Android/Transcanner/app/build/intermediates/pre-dexed/debug/classes-a6760a4d2946dc358e27090b0b3ffd4e0c0397ea.jar
+/home/david/Projects/Android/Transcanner/app/build/intermediates/pre-dexed/debug/classes-94cf4f38e4f4afe35aa33c313b82933185c5be6e.jar
