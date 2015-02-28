@@ -1,0 +1,5 @@
+/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/classes/debug
+/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-a3876b1bb145dff5c2379b489dfed242241641c2.jar
+/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-4f1eaaff1e6764248d6d5291685c6794b2b4c68a.jar
+/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/pre-dexed/debug/classes-59d6ccf67a9f8822f58a3fc1564cb77148fbf441.jar
+/Users/Gongxl/AndroidStudioProjects/Transcanner/app/build/intermediates/pre-dexed/debug/classes-e6a863673bb6c97aea3a6ce107affa7d3b256102.jar
