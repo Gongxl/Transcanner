@@ -214,6 +214,9 @@ public class Camera extends Activity {
         baseApi.setImage(bitmap);
 
         String recognizedText = baseApi.getUTF8Text();
+        Intent intent = new Intent(Camera.this,ScanResult.class);
+        intent.putExtra("OCR",recognizedText);
+        startActivity(intent);
 
         baseApi.end();
 
