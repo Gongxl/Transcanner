@@ -8,5 +8,7 @@
     <string name="title_activity_camera">Camera</string>
     <string name="title_activity_translation">Translation</string>
     <string name="title_activity_scan_result">ScanResult</string>
+    <string name="button_text">OCR!</string>
+    <string name="text_hint">OCRed Text will appear here</string>
 
 </resources>
