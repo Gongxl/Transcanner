@@ -37,7 +37,7 @@ public class MainMenu extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
+//
         CustomList adapter = new
                 CustomList(MainMenu.this, name, imageId);
         list = (ListView) findViewById(R.id.list);
