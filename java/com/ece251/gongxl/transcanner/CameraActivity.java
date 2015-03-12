@@ -135,23 +135,23 @@ public class CameraActivity extends Activity {
                 }
         );
 
-        final Button button_realtime = (Button) findViewById(R.id.button_realtime);
-        button_realtime.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPreview.getHolder().removeCallback(mPreview);
-                        mCamera.stopPreview();
-                        mCamera.setPreviewCallback(null);
-                        mCamera.release();
-                        mCamera = null;
-                        Intent intent = new Intent();
-                        intent.setClass(CameraActivity.this, RealtimeActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-        );
+//        final Button button_realtime = (Button) findViewById(R.id.button_realtime);
+//        button_realtime.setOnClickListener(
+//                new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        mPreview.getHolder().removeCallback(mPreview);
+//                        mCamera.stopPreview();
+//                        mCamera.setPreviewCallback(null);
+//                        mCamera.release();
+//                        mCamera = null;
+//                        Intent intent = new Intent();
+//                        intent.setClass(CameraActivity.this, RealtimeActivity.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                }
+//        );
     }
 
 

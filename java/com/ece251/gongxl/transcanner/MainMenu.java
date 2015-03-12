@@ -56,7 +56,7 @@ public class MainMenu extends Activity {
                         break;
                     }
                     case 1: {
-                        intent = new Intent(MainMenu.this, Translation.class);
+                        intent = new Intent(MainMenu.this, RealtimeActivity.class);
                         startActivity(intent);
                         break;
                     }

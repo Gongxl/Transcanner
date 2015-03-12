@@ -36,7 +36,7 @@ public class ScanResult extends Activity {
                 editText.setText((String) msg.obj);
             }
         };
-        final String trans="Fifty shades of Grey";
+        
         ImageButton b2 = (ImageButton)findViewById(R.id.translate);
         b2.setOnClickListener(new Button.OnClickListener() {
 
