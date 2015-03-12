@@ -42,19 +42,19 @@ public class Translator {
 
     private static String extractResult(JsonReader reader) throws IOException {
         reader.beginArray();
-        String translated = null;
+        StringBuilder translated = new StringBuilder();
         while(reader.hasNext()) {
             reader.beginObject();
             while(reader.hasNext()) {
                 String name = reader.nextName();
                 if(name.equals("dst"))
-                    translated = reader.nextString();
+                    translated.append(reader.nextString());
                 else reader.skipValue();
             }
             reader.endObject();
         }
         reader.endArray();
-        return translated;
+        return translated.toString();
     }
 
 }
