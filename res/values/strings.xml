@@ -37,5 +37,13 @@
     <string name = "connection_fail">Connection failed</string>
     <string name = "connection_lost">Connection lost</string>
     <string name = "send_message">send</string>
-
+    <string name="button_localization">Localize</string>
+    <string name="connect">Connect</string>
+    <string name ="disconnect">disconnect</string>
+    <string name = "prompt_start_location_service">You need to start location service</string>
+    <string name="prompt_already_connected">Location service is already on</string>
+    <string name = "prompt_already_disconnected">Location service is already off</string>
+    <string name ="prompt_connecting">Starting location service</string>
+    <string name ="prompt_disconnecting">Stopping location service</string>
+    <string name="title_activity_list_devices">ListDevices</string>
 </resources>
