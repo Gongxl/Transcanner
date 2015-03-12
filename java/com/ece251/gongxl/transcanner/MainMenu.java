@@ -51,7 +51,7 @@ public class MainMenu extends Activity {
                 Intent intent;
                 switch (position) {
                     case 0: {
-                        intent = new Intent(MainMenu.this, Camera.class);
+                        intent = new Intent(MainMenu.this, CameraActivity.class);       ////// huangchong
                         startActivity(intent);
                         break;
                     }

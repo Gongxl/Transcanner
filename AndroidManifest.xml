@@ -29,8 +29,8 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".Camera"
-            android:label="@string/title_activity_camera" >
+            android:name=".CameraActivity"
+            android:label="CameraActivity" >
         </activity>
         <activity
             android:name=".Translation"
@@ -43,6 +43,14 @@
         <activity
             android:name=".ScanResult"
             android:label="@string/title_activity_scan_result" >
+        </activity>
+        <activity
+            android:name=".DrawActivity"
+            android:label="DrawActivity" >
+        </activity>
+        <activity
+            android:name=".RealtimeActivity"
+            android:label="RealtimeActivity" >
         </activity>
     </application>
 
