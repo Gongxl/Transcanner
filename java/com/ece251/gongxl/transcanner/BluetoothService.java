@@ -6,10 +6,16 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,7 +41,7 @@ public class BluetoothService {
     private ConnectThread connectThread;
     private CommunicationThread communicationThread;
     private int serviceState;
-
+    private String recvDir;
     // Constants that indicate the current connection state
     // we're idle
     public static final int STATE_IDLE = 0;
@@ -49,8 +55,6 @@ public class BluetoothService {
     public static final boolean SWITCH_ON = true;
     public static final boolean SWITCH_OFF = false;
 
-
-
     // Constants that indicate the message
     public static final int MESSAGE_STATE_CHANGE = 0;
     public static final int MESSAGE_DEVICE_NAME = 1;
@@ -58,6 +62,9 @@ public class BluetoothService {
     public static final int MESSAGE_CONNECTION_LOST = 3;
     public static final int MESSAGE_READ = 4;
     public static final int MESSAGE_WRITE = 5;
+    public static final int MESSAGE_FILE_RECV = 6;
+
+
     public static final int THREAD_LISTENING = 0;
     public static final int THREAD_CONNECTING = 1;
     public static final int THREAD_COMMUNICATION = 2;
@@ -67,11 +74,12 @@ public class BluetoothService {
      * @param context The UI Activity Context
      * @param handler A Handler to send messages back to the UI Activity
      */
-    public BluetoothService(Context context, Handler handler) {
+    public BluetoothService(Context context, Handler handler, String recvDir) {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.serviceState = STATE_IDLE;
         this.handler = handler;
         this.context = context;
+        this.recvDir = recvDir;
     }
 
     public synchronized void startListening() {
@@ -222,6 +230,36 @@ public class BluetoothService {
         // Cancel the listening thread
         shutThread(THREAD_LISTENING);
         setState(STATE_IDLE);
+    }
+
+
+    public void sendFile(String path) {
+        File sdCard = Environment.getExternalStorageDirectory();
+
+        File file = new File(sdCard, path);
+
+        StringBuilder text = new StringBuilder();
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(file));
+            String line;
+            text.append("SOF\n");
+            while((line = bufferedReader.readLine()) != null)
+                text.append(line + '\n');
+            text.append("EOF\n");
+            send(text.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**
@@ -427,18 +465,39 @@ public class BluetoothService {
         public void run() {
             byte[] buffer = new byte[1024];
             int bytes;
-
+            boolean fileFlag = false;
+            String text = null;
+            File file = null;
+            FileWriter writer = null;
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
                     // Read from the InputStream
                     bytes = inputStream.read(buffer);
 
-                    String text = new String(Arrays.copyOf(buffer, bytes),
+                    text = new String(Arrays.copyOf(buffer, bytes),
                             "UTF-8");
-                    System.out.println("received message" + text);
-                    // Send the obtained bytes to the UI Activity
-                    syncMessage(MESSAGE_READ, text);
+                    if(fileFlag) {
+                        bytes = inputStream.read(buffer);
+                        text = new String(Arrays.copyOf(buffer, bytes),
+                                          "UTF-8");
+                        while(!text.equals("EOF"))
+                            writer.write(text);
+                        writer.close();
+                        fileFlag = false;
+                        System.out.println("received file" + file.getPath());
+                        syncMessage(MESSAGE_FILE_RECV, file.getPath());
+                    } else if(text.equals("SOF")) {
+                        fileFlag = true;
+                        file = new File(Environment.getExternalStorageDirectory(),
+                                        recvDir);
+                        writer = new FileWriter(file);
+                        System.out.println("start receiving files");
+                    } else {
+                        System.out.println("received message" + text);
+                        // Send the obtained bytes to the UI Activity
+                        syncMessage(MESSAGE_READ, text);
+                    }
                 } catch (IOException e) {
                     // Send a failure message back to the Activity
                     syncMessage(MESSAGE_CONNECTION_LOST, null);
