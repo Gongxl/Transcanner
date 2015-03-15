@@ -106,7 +106,7 @@ public class ScanResult extends Activity {
                 String filepath = SavetoFile().getPath();
                 String shootTime = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z").format(date);
                 Intent intent = new Intent(ScanResult.this,SaveResult.class);
-
+                intent.putExtra("Content",editText.getText().toString()+"\n");
                 intent.putExtra("FilePath",filepath);
                 intent.putExtra("shootTime",shootTime);
                 startActivity(intent);

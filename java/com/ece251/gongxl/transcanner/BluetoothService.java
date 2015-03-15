@@ -236,15 +236,15 @@ public class BluetoothService {
         setState(STATE_IDLE);
     }
 
-    public void sendFile() {
+    public void sendFile(String content) {
 //        StringBuilder sb = new StringBuilder();
 //        sb.append("a\n");
 //        sb.append("b\n");
 //        sb.append("c\n");
 //        send(sb.toString());
-        send("SOF");
-        send("a\nb\nc\n");
-        send("EOF");
+        send("SOF\n");
+        send(content);
+        send("EOF\n");
     }
 
     /**

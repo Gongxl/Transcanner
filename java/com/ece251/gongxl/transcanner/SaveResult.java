@@ -40,6 +40,7 @@ public class SaveResult extends Activity {
 
         Intent fileIntent = getIntent();
         final String filepath = fileIntent.getStringExtra("FilePath");
+        final String content = fileIntent.getStringExtra("Content");
         t1.setText(filepath);
         String shootTime = fileIntent.getStringExtra("shootTime");
         t2.setText(shootTime);
@@ -78,8 +79,7 @@ public class SaveResult extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(SaveResult.this,BluetoothActivity.class);
-                intent.putExtra("FilePath",filepath);
-                Log.i("Bluetooth",filepath);
+                intent.putExtra("Content",content);
                 startActivity(intent);
                 finish();
             }

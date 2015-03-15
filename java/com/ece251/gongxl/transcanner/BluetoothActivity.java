@@ -23,7 +23,7 @@ public class BluetoothActivity extends Activity {
     private final static int REQUEST_FIND_DEVICES = 0;
     private final static int REQUEST_CANVAS = 1;
     String connectedDeviceName;
-    String filepath;
+    String content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,8 @@ public class BluetoothActivity extends Activity {
         setContentView(R.layout.activity_bluetooth);
 
         Intent fileIntent = getIntent();
-        filepath = fileIntent.getStringExtra("FilePath");
+        content = fileIntent.getStringExtra("Content");
+        Log.i("Content",content);
 
         bluetoothService = new BluetoothService(this, handler);
 
@@ -141,8 +142,7 @@ public class BluetoothActivity extends Activity {
                             Toast.makeText(getApplicationContext(),
                                     "Connected to " + connectedDeviceName,
                                     Toast.LENGTH_SHORT).show();
-                                    bluetoothService.sendFile( );
-//                                    bluetoothService.sendFile(filepath);
+                                    bluetoothService.sendFile(content);
                                     Log.i("Bluetooth", "Send successfully");
 
                                     TextView textView = (TextView)findViewById(R.id.bluetooth_finish);
