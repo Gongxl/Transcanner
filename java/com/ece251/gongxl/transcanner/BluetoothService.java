@@ -467,8 +467,12 @@ public class BluetoothService {
                     System.out.println("received message" + text);
                     if(fileFlag) {
                         StringBuilder stringBuilder = new StringBuilder();
-                        while(!text.startsWith("EOF"))
+                        while(!text.startsWith("EOF")) {
                             stringBuilder.append(text);
+                            bytes = inputStream.read(buffer);
+                            text = new String(Arrays.copyOf(buffer, bytes),
+                                    "UTF-8");
+                        }
                         fileFlag = false;
                         ScanResult.SavetoFile(stringBuilder.toString(), true);
                         continue;
