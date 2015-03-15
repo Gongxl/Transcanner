@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -61,8 +60,6 @@ public class BluetoothService {
     public static final int MESSAGE_READ = 4;
     public static final int MESSAGE_WRITE = 5;
     public static final int MESSAGE_DRAWING = 6;
-
-
 
     public static final int THREAD_LISTENING = 0;
     public static final int THREAD_CONNECTING = 1;

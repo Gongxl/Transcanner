@@ -73,8 +73,8 @@ public class BluetoothActivity extends Activity {
                 Log.i("Bluetooth", "Find device");
             }
         });
-
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -99,7 +99,7 @@ public class BluetoothActivity extends Activity {
     @Override
     public void onStop(){
         super.onStop();
-//        bluetoothService.stopService();
+        bluetoothService.stopService();
     }
     @Override
     public void onStart() {

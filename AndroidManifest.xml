@@ -58,7 +58,8 @@
         </activity>
         <activity
             android:name=".ListDeviceActivity"
-            android:label="@string/title_activity_list_device" >
+            android:label="@string/title_activity_list_device"
+            android:theme="@android:style/Theme.Holo.Dialog">
         </activity>
         <activity
             android:name=".BluetoothActivity"

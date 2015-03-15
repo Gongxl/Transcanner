@@ -15,9 +15,6 @@ import android.widget.Toast;
 
 
 public class ImportActivity extends Activity {
-
-
-
     private TextView receiveMessage;
     private BluetoothService bluetoothService;
     private final static int REQUEST_FIND_DEVICES = 0;
