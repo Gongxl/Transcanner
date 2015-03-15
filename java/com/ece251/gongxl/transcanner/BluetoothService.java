@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -19,7 +20,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -74,12 +77,12 @@ public class BluetoothService {
      * @param context The UI Activity Context
      * @param handler A Handler to send messages back to the UI Activity
      */
-    public BluetoothService(Context context, Handler handler, String recvDir) {
+    public BluetoothService(Context context, Handler handler) {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.serviceState = STATE_IDLE;
         this.handler = handler;
         this.context = context;
-        this.recvDir = recvDir;
+
     }
 
     public synchronized void startListening() {
@@ -234,20 +237,25 @@ public class BluetoothService {
 
 
     public void sendFile(String path) {
-        File sdCard = Environment.getExternalStorageDirectory();
-
-        File file = new File(sdCard, path);
+        File file = new File(path);
 
         StringBuilder text = new StringBuilder();
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(file));
             String line;
-            text.append("SOF\n");
-            while((line = bufferedReader.readLine()) != null)
-                text.append(line + '\n');
-            text.append("EOF\n");
-            send(text.toString());
+
+            line = ("SOF\n");
+            send(line);
+            line = "a";
+            send(line);
+            line = "asd\n";
+            send(line);
+            //while((line = bufferedReader.readLine()) != null)
+              //  text.append(line + '\n');
+//            text.append("asdjfhgd\n");
+//            text.append("dfsdgsdfgdfh\n");
+            System.out.println(text.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -477,27 +485,37 @@ public class BluetoothService {
 
                     text = new String(Arrays.copyOf(buffer, bytes),
                             "UTF-8");
-                    if(fileFlag) {
-                        bytes = inputStream.read(buffer);
-                        text = new String(Arrays.copyOf(buffer, bytes),
-                                          "UTF-8");
-                        while(!text.equals("EOF"))
-                            writer.write(text);
-                        writer.close();
-                        fileFlag = false;
-                        System.out.println("received file" + file.getPath());
-                        syncMessage(MESSAGE_FILE_RECV, file.getPath());
-                    } else if(text.equals("SOF")) {
-                        fileFlag = true;
-                        file = new File(Environment.getExternalStorageDirectory(),
-                                        recvDir);
-                        writer = new FileWriter(file);
-                        System.out.println("start receiving files");
-                    } else {
-                        System.out.println("received message" + text);
-                        // Send the obtained bytes to the UI Activity
-                        syncMessage(MESSAGE_READ, text);
-                    }
+                    System.out.println(text);
+
+//                    if(fileFlag) {
+//                        bytes = inputStream.read(buffer);
+//                        text = new String(Arrays.copyOf(buffer, bytes),
+//                                          "UTF-8");
+//                        //while(!text.equals("EOF"))
+//                        //    writer.write(text);
+//                        writer.close();
+//                        fileFlag = false;
+//                        System.out.println("received file" + file.getPath());
+//                        syncMessage(MESSAGE_FILE_RECV, file.getPath());
+//                    } else if(text.trim().equals("SOF")) {
+//                        fileFlag = true;
+//                        File sdCardDir = Environment.getExternalStorageDirectory();
+//                        File StorageDir = new File(sdCardDir,"TS");
+//                        if (! StorageDir.exists()){
+//                            if (! StorageDir.mkdirs()){
+//                                Log.d("Save", "failed to create directory");
+//                            }
+//                        }
+//
+//                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//                        file = new File(StorageDir.getPath(), File.separator + "Rec_" + timeStamp + ".txt");
+//                        writer = new FileWriter(file);
+//                        System.out.println("start receiving files");
+//                    } else {
+//                        System.out.println("received message" + text);
+//                        // Send the obtained bytes to the UI Activity
+//                        syncMessage(MESSAGE_READ, text);
+//                    }
                 } catch (IOException e) {
                     // Send a failure message back to the Activity
                     syncMessage(MESSAGE_CONNECTION_LOST, null);
@@ -516,7 +534,7 @@ public class BluetoothService {
         public void write(byte[] buffer) {
             try {
                 outputStream.write(buffer);
-
+                
                 // Echo the sent message back to the UI Activity
                 syncMessage(MESSAGE_WRITE,
                         new String(buffer, "UTF-8"));

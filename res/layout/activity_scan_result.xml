@@ -13,7 +13,7 @@
 
         android:textSize="24dip"
 
-        android:layout_height="400dip"
+        android:layout_height="450dip"
 
         android:gravity="left"
 
@@ -23,24 +23,26 @@
 
         android:layout_marginTop="5dip"
 
-        android:layout_width="300dip"
+        android:layout_width="330dip"
 
         android:layout_gravity="center_horizontal">
 
     </EditText>
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="100dip"
+    android:layout_height="80dip"
+    android:layout_marginTop="16dp"
+    android:paddingBottom="16dp"
     android:orientation="horizontal"
     android:layout_gravity="center_horizontal">
     <ImageButton
-        android:id="@+id/backtoscan"
+        android:id="@+id/home"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:scaleType="centerInside"
         android:layout_weight="1"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/scan2"
+
+        android:src="@drawable/home"
         android:background="@android:color/transparent"/>
 
     <ImageButton
@@ -49,39 +51,20 @@
         android:layout_height="wrap_content"
         android:scaleType="centerInside"
         android:layout_weight="1"
-        android:layout_marginTop="50dp"
+
         android:src="@drawable/trans2"
         android:background="@android:color/transparent"/>
 
     <ImageButton
-        android:id="@+id/time"
+        android:id="@+id/save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerInside"
         android:layout_weight="1"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/time2"
+
+        android:src="@drawable/save"
         android:background="@android:color/transparent"/>
 
-    <ImageButton
-        android:id="@+id/location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerInside"
-        android:layout_weight="1"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/location"
-        android:background="@android:color/transparent"/>
-
-    <ImageButton
-        android:id="@+id/share"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerInside"
-        android:layout_weight="1"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/share4"
-        android:background="@android:color/transparent"/>
 
     </LinearLayout>
 

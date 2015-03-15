@@ -8,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -38,6 +39,7 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
                 .build();
         this.context = context;
         this.geocoder = new Geocoder(context);
+        System.out.println("Initialized");
     }
 
     public String getLocation() {
@@ -86,7 +88,7 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onLocationChanged(Location location) {
-        this.location = location;
+        this.location = location;System.out.println("onLocationChanged");
     }
 
     @Override
@@ -108,6 +110,7 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
                 stringBuilder.append("AdminArea: " + address.getAdminArea() + '\n');
                 stringBuilder.append("AddressLine1: " + address.getAddressLine(0) + '\n');
                 stringBuilder.append("AddressLine2: " + address.getAddressLine(1) + '\n');
+                System.out.println("address++");
             }
             return stringBuilder.toString();
         } catch (IOException e) {

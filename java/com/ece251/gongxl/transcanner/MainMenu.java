@@ -22,14 +22,14 @@ public class MainMenu extends Activity {
     String[] name = {
             "SCAN",
             "TRANSLATE",
-            "SETTING",
+            "IMPORT",
             "ABOUT US",
 
     } ;
     Integer[] imageId = {
             R.drawable.scan2,
             R.drawable.trans2,
-            R.drawable.set2,
+            R.drawable.inbox,
             R.drawable.info2,
 
     };
@@ -61,7 +61,7 @@ public class MainMenu extends Activity {
                         break;
                     }
                     case 2: {
-                        intent = new Intent(MainMenu.this, SettingsActivity.class);
+                        intent = new Intent(MainMenu.this, ImportActivity.class);
                         startActivity(intent);
                         break;
                     }

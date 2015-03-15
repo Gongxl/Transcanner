@@ -1,86 +1,45 @@
 package com.ece251.gongxl.transcanner;
 
-/**
- * Created by david on 3/11/15.
- */
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class BluetoothActivity extends Activity {
 
+
+public class ImportActivity extends Activity {
+
+
+
+    private TextView receiveMessage;
     private BluetoothService bluetoothService;
     private final static int REQUEST_FIND_DEVICES = 0;
     String connectedDeviceName;
-    String filepath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bluetooth);
-
-        Intent fileIntent = getIntent();
-        filepath = fileIntent.getStringExtra("FilePath");
+        setContentView(R.layout.activity_import);
 
         bluetoothService = new BluetoothService(this, handler);
 
+        receiveMessage = (TextView) findViewById(R.id.receivedMessage);
 
         bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
-        Log.i("Bluetooth", "Enable bluetooth");
-//        try {
-//            Thread.currentThread().sleep(10000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
         bluetoothService.makeDiscoverable();
-        Log.i("Bluetooth", "Visible");
 
-        Button find_btn = (Button)findViewById(R.id.find);
-        find_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent findDeviceIntent = new Intent();
-                findDeviceIntent.setClass(BluetoothActivity.this,
-                        ListDeviceActivity.class);
-                startActivityForResult(findDeviceIntent, REQUEST_FIND_DEVICES);
-
-                Log.i("Bluetooth", "Find device");
-            }
-        });
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_FIND_DEVICES) {
-            switch(resultCode) {
-                case Activity.RESULT_CANCELED:
-                    Toast.makeText(this,
-                            R.string.exit_find_device,
-                            Toast.LENGTH_LONG).show();
-                    break;
-                case Activity.RESULT_OK:
-                    Toast.makeText(this,
-                            R.string.connecting,
-                            Toast.LENGTH_LONG).show();
-                    connectDevice(data);
 
-                    break;
-            }
-        }
-    }
     @Override
     public void onStop(){
         super.onStop();
@@ -97,7 +56,6 @@ public class BluetoothActivity extends Activity {
             if (bluetoothService.getState() == BluetoothService.STATE_IDLE) {
                 // Start the Bluetooth chat services
                 bluetoothService.startListening();
-
             }
         } else {
             Toast.makeText(this,
@@ -106,33 +64,19 @@ public class BluetoothActivity extends Activity {
         }
     }
 
-    private void connectDevice(Intent data) {
-        // Get the device MAC address
-        String address = data.getExtras()
-                .getString(ListDeviceActivity.EXTRA_DEVICE_ADDRESS);
-
-        // Attempt to connect to the device
-        bluetoothService.startConnecting(address);
-    }
 
 
     Handler handler = new Handler() {
-                            @Override
-                            public void handleMessage(Message msg) {
-                                super.handleMessage(msg);
-                                switch (msg.arg1) {
-                                    case BluetoothService.MESSAGE_STATE_CHANGE:
-                                        switch (Integer.valueOf((String)msg.obj)) {
-                                            case BluetoothService.STATE_COMMUNICATING:
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.arg1) {
+                case BluetoothService.MESSAGE_STATE_CHANGE:
+                    switch (Integer.valueOf((String)msg.obj)) {
+                        case BluetoothService.STATE_COMMUNICATING:
                             Toast.makeText(getApplicationContext(),
                                     "Connected to " + connectedDeviceName,
                                     Toast.LENGTH_SHORT).show();
-                                    bluetoothService.sendFile(filepath);
-                                    Log.i("Bluetooth", "Send successfully");
-
-                                    TextView textView = (TextView)findViewById(R.id.bluetooth_finish);
-                                    textView.setText("Finish!");
-
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             Toast.makeText(getApplicationContext(),
@@ -166,11 +110,15 @@ public class BluetoothActivity extends Activity {
                     break;
                 case BluetoothService.MESSAGE_READ:
                     String text = (String) msg.obj;
+                    System.out.println(text);
                     // construct a string from the valid bytes in the buffer
-
+                    receiveMessage.setText(connectedDeviceName
+                            + ":  " + text);
                     Toast.makeText(getApplicationContext(),
                             R.string.prompt_receive_message,
                             Toast.LENGTH_SHORT).show();
+                    receiveMessage.setText("Received!");
+
                     break;
                 case BluetoothService.MESSAGE_WRITE:
                     String echo = (String) msg.obj;
@@ -182,4 +130,5 @@ public class BluetoothActivity extends Activity {
             }
         }
     };
+
 }

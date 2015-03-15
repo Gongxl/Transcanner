@@ -1,0 +1,150 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ece251.gongxl.transcanner.SaveResult"
+    android:orientation="vertical">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1.0"
+    android:paddingTop="16dp"
+    android:background="@color/material_deep_teal_200"
+    android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="File name:"
+            android:textSize="18dp"
+            android:textColor="#FFFFFF"/>
+        <TextView android:id="@+id/filename"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0"
+
+            android:textSize="18dp"
+            android:textColor="#FFFFFF"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="Time &amp; Date:"
+            android:textSize="18dp"
+            android:textColor="#FFFFFF"/>
+        <TextView android:id="@+id/time_date"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0"
+
+            android:textSize="18dp"
+            android:textColor="#FFFFFF"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="Location:"
+            android:textSize="18dp"
+            android:textColor="#FFFFFF"/>
+        <TextView android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0"
+
+            android:textSize="18dp"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:paddingBottom="16dp"
+        android:orientation="vertical">
+
+        <LinearLayout android:id="@+id/layout_home"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0"
+            android:paddingTop="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:src="@drawable/home"
+                android:layout_marginLeft="50dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="Home"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:gravity="left|center_vertical"
+                android:textColor="#FF7300"
+
+                android:layout_marginRight="50dp"/>
+            </LinearLayout>
+
+        <LinearLayout android:id="@+id/layout_bluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0"
+            android:paddingTop="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:src="@drawable/bluetooth"
+                android:layout_marginLeft="50dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="Bluetooth"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:gravity="left|center_vertical"
+                android:textColor="#FF7300"
+
+                android:layout_marginRight="50dp"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/layout_email"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0"
+            android:paddingTop="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:src="@drawable/email"
+                android:layout_marginLeft="50dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="Email"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:gravity="left|center_vertical"
+                android:textColor="#FF7300"
+
+                android:layout_marginRight="50dp"/>
+        </LinearLayout>
+
+
+        </LinearLayout>
+
+</LinearLayout>

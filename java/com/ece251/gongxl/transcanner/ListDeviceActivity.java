@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.Set;
-
 
 public class ListDeviceActivity extends Activity {
     /** this is used as key when retrieving the extra of
