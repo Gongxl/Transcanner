@@ -19,8 +19,9 @@ import android.widget.Toast;
 
 public class BluetoothActivity extends Activity {
 
-    private BluetoothService bluetoothService;
+    private static BluetoothService bluetoothService;
     private final static int REQUEST_FIND_DEVICES = 0;
+    private final static int REQUEST_CANVAS = 1;
     String connectedDeviceName;
     String filepath;
 
@@ -59,6 +60,19 @@ public class BluetoothActivity extends Activity {
             }
         });
 
+        Button canvas_btn = (Button)findViewById(R.id.canvas);
+        canvas_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent findDeviceIntent = new Intent();
+                findDeviceIntent.setClass(BluetoothActivity.this,
+                       RealtimeCanvas.class);
+                startActivityForResult(findDeviceIntent, REQUEST_CANVAS);
+
+                Log.i("Bluetooth", "Find device");
+            }
+        });
+
     }
 
     @Override
@@ -84,7 +98,7 @@ public class BluetoothActivity extends Activity {
     @Override
     public void onStop(){
         super.onStop();
-        bluetoothService.stopService();
+//        bluetoothService.stopService();
     }
     @Override
     public void onStart() {
@@ -127,7 +141,8 @@ public class BluetoothActivity extends Activity {
                             Toast.makeText(getApplicationContext(),
                                     "Connected to " + connectedDeviceName,
                                     Toast.LENGTH_SHORT).show();
-                                    bluetoothService.sendFile(filepath);
+                                    bluetoothService.sendFile( );
+//                                    bluetoothService.sendFile(filepath);
                                     Log.i("Bluetooth", "Send successfully");
 
                                     TextView textView = (TextView)findViewById(R.id.bluetooth_finish);
@@ -182,4 +197,8 @@ public class BluetoothActivity extends Activity {
             }
         }
     };
+
+    static BluetoothService getBluetoothService(){
+        return bluetoothService;
+    }
 }

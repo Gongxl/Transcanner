@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,44 +25,39 @@ import java.io.IOException;
 public class SaveResult extends Activity {
 
     private LocationService locationService;
-    Handler handler;
+    private TabHost myTabHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_result);
+        myTabHost = (TabHost) findViewById(android.R.id.tabhost);
+        myTabHost.setup();
+
+        final TextView t1 = (TextView)findViewById(R.id.file_name);
+        final TextView t2 = (TextView)findViewById(R.id.time_date);
+        final TextView t3 = (TextView)findViewById(R.id.location);
 
         Intent fileIntent = getIntent();
         final String filepath = fileIntent.getStringExtra("FilePath");
+        t1.setText(filepath);
+        String shootTime = fileIntent.getStringExtra("shootTime");
+        t2.setText(shootTime);
 
-        locationService = new LocationService(getApplicationContext());
+        this.locationService = new LocationService(getApplicationContext());
         locationService.startService();
 
-        final TextView textView  = (TextView) findViewById(R.id.location);
+        myTabHost.addTab(myTabHost.newTabSpec("tab1").setIndicator("Name & Path").setContent(R.id.tab1));
+        myTabHost.addTab(myTabHost.newTabSpec("tab2").setIndicator("Time & Date").setContent(R.id.tab2));
+        myTabHost.addTab(myTabHost.newTabSpec("tab3").setIndicator("Location").setContent(R.id.tab3));
 
-        handler = new Handler() {
+        myTabHost.getTabWidget().getChildAt(2).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-
-                textView.setText((String) msg.obj);
-                locationService.stopService();
+            public void onClick(View v) {
+                t3.setText(locationService.getAddress());
+                myTabHost.setCurrentTab(2);
             }
-        };
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    String address = locationService.getAddress();
-                    Message message = Message.obtain();
-                    message.obj = address;
-                    handler.sendMessage(message);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+        });
 
         LinearLayout l1 = (LinearLayout)findViewById(R.id.layout_home);
         l1.setOnClickListener(new Button.OnClickListener() {

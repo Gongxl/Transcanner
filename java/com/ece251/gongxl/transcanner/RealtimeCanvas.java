@@ -29,7 +29,7 @@ public class RealtimeCanvas extends ActionBarActivity {
                 }
             }
         };
-        bluetoothService = MainActivity.getBluetoothService();
+        bluetoothService = BluetoothActivity.getBluetoothService();
         bluetoothService.send("canvas view");
         bluetoothService.setCanvasHandler(handler);
         canvas = (LinearLayout) findViewById(R.id.canvasView);

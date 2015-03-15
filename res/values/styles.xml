@@ -5,6 +5,10 @@
         <!-- Customize your theme here. -->
     </style>
 
-
+    <!-- popupwindows -->
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@anim/anim_entry</item>
+        <item name="android:windowExitAnimation">@anim/anim_exit</item>
+    </style>
 
 </resources>

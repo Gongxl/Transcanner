@@ -105,13 +105,13 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
                     2);
             if(addressList == null)
                 throw new Exception("fail to get the address");
-            for(Address address : addressList) {
-                stringBuilder.append("Country: " + address.getCountryName() + '\n');
-                stringBuilder.append("AdminArea: " + address.getAdminArea() + '\n');
-                stringBuilder.append("AddressLine1: " + address.getAddressLine(0) + '\n');
-                stringBuilder.append("AddressLine2: " + address.getAddressLine(1) + '\n');
+//            for(Address address : addressList) {
+                stringBuilder.append("Country: " + addressList.get(0).getCountryName() + '\n');
+                stringBuilder.append("AdminArea: " + addressList.get(0).getAdminArea() + '\n');
+                stringBuilder.append("AddressLine1: " + addressList.get(0).getAddressLine(0) + '\n');
+                stringBuilder.append("AddressLine2: " + addressList.get(0).getAddressLine(1) + '\n');
                 System.out.println("address++");
-            }
+//            }
             return stringBuilder.toString();
         } catch (IOException e) {
             e.printStackTrace();

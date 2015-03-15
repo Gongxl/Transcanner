@@ -7,10 +7,14 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import java.io.File;
@@ -21,8 +25,9 @@ import java.util.Date;
 
 
 public class ScanResult extends Activity {
-        Handler handler;
-
+    Handler handler;
+    Date date;
+    private PopupWindow save_popup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,12 +92,66 @@ public class ScanResult extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+                date = new Date();
+
+//                if (save_popup != null&&save_popup.isShowing()) {
+//                    save_popup.dismiss();
+//                    return;
+//                } else {
+//                    initmPopupWindowView();
+//
+//                    save_popup.showAtLocation(findViewById(R.id.save),Gravity.BOTTOM,0,0);
+//                }
+
                 String filepath = SavetoFile().getPath();
+                String shootTime = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z").format(date);
                 Intent intent = new Intent(ScanResult.this,SaveResult.class);
 
                 intent.putExtra("FilePath",filepath);
+                intent.putExtra("shootTime",shootTime);
                 startActivity(intent);
                 finish();
+            }
+        });
+    }
+
+    public void initmPopupWindowView() {
+        View customView = null;
+        customView = getLayoutInflater().inflate(R.layout.save_popup, null, false);
+        save_popup = new PopupWindow(customView, 450, 150);
+        // 使其聚集 要想监听菜单里控件的事件就必须要调用此方法
+        save_popup.setFocusable(true);
+        save_popup.setAnimationStyle(R.style.AnimationPreview);
+        // 自定义view添加触摸事件
+        customView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (save_popup != null && save_popup.isShowing()) {
+                    save_popup.dismiss();
+                    save_popup = null;
+                }
+                return false;
+            }
+        });
+        LinearLayout layoutEffect1 = (LinearLayout) customView.findViewById(R.id.layout_effect_hj);
+        layoutEffect1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ScanResult.this, "效果-怀旧", Toast.LENGTH_SHORT).show();
+            }
+        });
+        LinearLayout layoutEffect2 = (LinearLayout) customView.findViewById(R.id.layout_effect_fd);
+        layoutEffect2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ScanResult.this, "效果-浮雕", Toast.LENGTH_SHORT).show();
+            }
+        });
+        LinearLayout layoutEffect3 = (LinearLayout) customView.findViewById(R.id.layout_effect_gz);
+        layoutEffect3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ScanResult.this, "效果-光照", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -108,7 +167,8 @@ public class ScanResult extends Activity {
                 }
             }
 
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
+
             File saveFile = new File(StorageDir.getPath(), File.separator + timeStamp + ".txt");
 
             EditText editText = (EditText)findViewById(R.id.scan_result);
