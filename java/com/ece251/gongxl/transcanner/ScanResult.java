@@ -103,7 +103,8 @@ public class ScanResult extends Activity {
 //                    save_popup.showAtLocation(findViewById(R.id.save),Gravity.BOTTOM,0,0);
 //                }
                 EditText editText = (EditText)findViewById(R.id.scan_result);
-                String filepath = SavetoFile(editText.toString(),false).getPath();
+                Log.i("editText",editText.getText().toString());
+                String filepath = SavetoFile(editText.getText().toString(),false).getPath();
                 Toast.makeText(ScanResult.this,"Saved",Toast.LENGTH_LONG).show();
                 String shootTime = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z").format(new Date());
                 Intent intent = new Intent(ScanResult.this,SaveResult.class);
@@ -169,7 +170,7 @@ public class ScanResult extends Activity {
             }
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File saveFile = null;
+            File saveFile;
             if(!rec)
             saveFile = new File(StorageDir.getPath(), File.separator + timeStamp + ".txt");
             else saveFile = new File(StorageDir.getPath(), File.separator + "Rec_" + timeStamp + ".txt");
