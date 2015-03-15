@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -453,6 +454,7 @@ public class BluetoothService {
         public void run() {
             byte[] buffer = new byte[1024];
             int bytes;
+            boolean fileFlag = false;
 
             // Keep listening to the InputStream while connected
             while (true) {
@@ -463,16 +465,20 @@ public class BluetoothService {
                     String text = new String(Arrays.copyOf(buffer, bytes),
                             "UTF-8");
                     System.out.println("received message" + text);
-                    if(text.equals("SOF"))
-                        System.out.println("received SOF!");
-                    if(text.equals("EOF"))
-                        System.out.println("received EOF");
-                    if(text.startsWith("DRAWING")) {
-                        syncMessage(MESSAGE_DRAWING, text);
+                    if(fileFlag) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        while(!text.startsWith("EOF"))
+                            stringBuilder.append(text);
+                        fileFlag = false;
+                        ScanResult.SavetoFile(stringBuilder.toString(), true);
                         continue;
                     }
+                    if(text.startsWith("SOF"))
+                        fileFlag = true;
+                    else if(text.startsWith("DRAWING"))
+                        syncMessage(MESSAGE_DRAWING, text);
                     // Send the obtained bytes to the UI Activity
-                    syncMessage(MESSAGE_READ, text);
+                    //syncMessage(MESSAGE_READ, text);
                 } catch (IOException e) {
                     // Send a failure message back to the Activity
                     syncMessage(MESSAGE_CONNECTION_LOST, null);
