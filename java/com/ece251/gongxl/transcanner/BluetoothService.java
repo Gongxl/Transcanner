@@ -6,23 +6,14 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.UUID;
 
 
@@ -34,7 +25,8 @@ public class BluetoothService {
     private static final String SERVICE_NAME = "TRANSCANNER_SHARE";
     // Member fields
     private final BluetoothAdapter bluetoothAdapter;
-    private final Handler handler;
+    private final Handler controlHandler;
+    private Handler canvasHandler;
     private final Context context;
     /**
      * acceptThread is run in block mode, waiting
@@ -44,7 +36,7 @@ public class BluetoothService {
     private ConnectThread connectThread;
     private CommunicationThread communicationThread;
     private int serviceState;
-    private String recvDir;
+
     // Constants that indicate the current connection state
     // we're idle
     public static final int STATE_IDLE = 0;
@@ -58,6 +50,8 @@ public class BluetoothService {
     public static final boolean SWITCH_ON = true;
     public static final boolean SWITCH_OFF = false;
 
+
+
     // Constants that indicate the message
     public static final int MESSAGE_STATE_CHANGE = 0;
     public static final int MESSAGE_DEVICE_NAME = 1;
@@ -65,7 +59,8 @@ public class BluetoothService {
     public static final int MESSAGE_CONNECTION_LOST = 3;
     public static final int MESSAGE_READ = 4;
     public static final int MESSAGE_WRITE = 5;
-    public static final int MESSAGE_FILE_RECV = 6;
+    public static final int MESSAGE_DRAWING = 6;
+
 
 
     public static final int THREAD_LISTENING = 0;
@@ -80,9 +75,12 @@ public class BluetoothService {
     public BluetoothService(Context context, Handler handler) {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.serviceState = STATE_IDLE;
-        this.handler = handler;
+        this.controlHandler = handler;
         this.context = context;
+    }
 
+    public void setCanvasHandler(Handler handler) {
+        this.canvasHandler = handler;
     }
 
     public synchronized void startListening() {
@@ -192,7 +190,10 @@ public class BluetoothService {
         Message message = Message.obtain();
         message.arg1 = messageType;
         message.obj = text;
-        handler.sendMessage(message);
+        if(messageType == MESSAGE_DRAWING)
+            this.canvasHandler.sendMessage(message);
+        else
+            this.controlHandler.sendMessage(message);
     }
 
     private synchronized void shutThread(int threadType) {
@@ -235,39 +236,15 @@ public class BluetoothService {
         setState(STATE_IDLE);
     }
 
-
-    public void sendFile(String path) {
-        File file = new File(path);
-
-        StringBuilder text = new StringBuilder();
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new FileReader(file));
-            String line;
-
-            line = ("SOF\n");
-            send(line);
-            line = "a";
-            send(line);
-            line = "asd\n";
-            send(line);
-            //while((line = bufferedReader.readLine()) != null)
-              //  text.append(line + '\n');
-//            text.append("asdjfhgd\n");
-//            text.append("dfsdgsdfgdfh\n");
-            System.out.println(text.toString());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
+    public void sendFile() {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("a\n");
+//        sb.append("b\n");
+//        sb.append("c\n");
+//        send(sb.toString());
+        send("SOF");
+        send("a\nb\nc\n");
+        send("EOF");
     }
 
     /**
@@ -289,6 +266,9 @@ public class BluetoothService {
         // Perform the write unsynchronized
         threadCopy.write(out);
     }
+
+
+
 
     /**
      * Set the current state of service
@@ -473,49 +453,26 @@ public class BluetoothService {
         public void run() {
             byte[] buffer = new byte[1024];
             int bytes;
-            boolean fileFlag = false;
-            String text = null;
-            File file = null;
-            FileWriter writer = null;
+
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
                     // Read from the InputStream
                     bytes = inputStream.read(buffer);
 
-                    text = new String(Arrays.copyOf(buffer, bytes),
+                    String text = new String(Arrays.copyOf(buffer, bytes),
                             "UTF-8");
-                    System.out.println(text);
-
-//                    if(fileFlag) {
-//                        bytes = inputStream.read(buffer);
-//                        text = new String(Arrays.copyOf(buffer, bytes),
-//                                          "UTF-8");
-//                        //while(!text.equals("EOF"))
-//                        //    writer.write(text);
-//                        writer.close();
-//                        fileFlag = false;
-//                        System.out.println("received file" + file.getPath());
-//                        syncMessage(MESSAGE_FILE_RECV, file.getPath());
-//                    } else if(text.trim().equals("SOF")) {
-//                        fileFlag = true;
-//                        File sdCardDir = Environment.getExternalStorageDirectory();
-//                        File StorageDir = new File(sdCardDir,"TS");
-//                        if (! StorageDir.exists()){
-//                            if (! StorageDir.mkdirs()){
-//                                Log.d("Save", "failed to create directory");
-//                            }
-//                        }
-//
-//                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//                        file = new File(StorageDir.getPath(), File.separator + "Rec_" + timeStamp + ".txt");
-//                        writer = new FileWriter(file);
-//                        System.out.println("start receiving files");
-//                    } else {
-//                        System.out.println("received message" + text);
-//                        // Send the obtained bytes to the UI Activity
-//                        syncMessage(MESSAGE_READ, text);
-//                    }
+                    System.out.println("received message" + text);
+                    if(text.equals("SOF"))
+                        System.out.println("received SOF!");
+                    if(text.equals("EOF"))
+                        System.out.println("received EOF");
+                    if(text.startsWith("DRAWING")) {
+                        syncMessage(MESSAGE_DRAWING, text);
+                        continue;
+                    }
+                    // Send the obtained bytes to the UI Activity
+                    syncMessage(MESSAGE_READ, text);
                 } catch (IOException e) {
                     // Send a failure message back to the Activity
                     syncMessage(MESSAGE_CONNECTION_LOST, null);
@@ -534,7 +491,7 @@ public class BluetoothService {
         public void write(byte[] buffer) {
             try {
                 outputStream.write(buffer);
-                
+
                 // Echo the sent message back to the UI Activity
                 syncMessage(MESSAGE_WRITE,
                         new String(buffer, "UTF-8"));

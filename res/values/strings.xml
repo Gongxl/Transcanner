@@ -49,5 +49,6 @@
     <string name="title_activity_list_devices">ListDevices</string>
     <string name="title_activity_import">ImportActivity</string>
     <string name="title_activity_save_result">SaveResult</string>
+    <string name="title_activity_realtime_canvas">RealtimeCanvas</string>
 
 </resources>

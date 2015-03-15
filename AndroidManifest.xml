@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -36,7 +36,6 @@
             android:name=".CameraActivity"
             android:label="CameraActivity" >
         </activity>
-
         <activity
             android:name=".ScanResult"
             android:label="@string/title_activity_scan_result" >
@@ -49,7 +48,6 @@
             android:name=".RealtimeActivity"
             android:label="RealtimeActivity" >
         </activity>
-
         <activity
             android:name=".ImportActivity"
             android:label="@string/title_activity_import" >
@@ -64,9 +62,12 @@
         </activity>
         <activity
             android:name=".BluetoothActivity"
-            android:label="BluetoothActivity">
+            android:label="BluetoothActivity" >
         </activity>
-
+        <activity
+            android:name=".RealtimeCanvas"
+            android:label="@string/title_activity_realtime_canvas" >
+        </activity>
     </application>
 
 </manifest>
