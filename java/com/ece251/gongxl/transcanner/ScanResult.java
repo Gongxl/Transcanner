@@ -26,8 +26,8 @@ import java.util.Date;
 
 public class ScanResult extends Activity {
     Handler handler;
-    Date date;
     private PopupWindow save_popup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +92,7 @@ public class ScanResult extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                date = new Date();
+
 
 //                if (save_popup != null&&save_popup.isShowing()) {
 //                    save_popup.dismiss();
@@ -102,9 +102,10 @@ public class ScanResult extends Activity {
 //
 //                    save_popup.showAtLocation(findViewById(R.id.save),Gravity.BOTTOM,0,0);
 //                }
-
-                String filepath = SavetoFile().getPath();
-                String shootTime = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z").format(date);
+                EditText editText = (EditText)findViewById(R.id.scan_result);
+                String filepath = SavetoFile(editText.toString(),false).getPath();
+                Toast.makeText(ScanResult.this,"Saved",Toast.LENGTH_LONG).show();
+                String shootTime = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z").format(new Date());
                 Intent intent = new Intent(ScanResult.this,SaveResult.class);
                 intent.putExtra("Content",editText.getText().toString()+"\n");
                 intent.putExtra("FilePath",filepath);
@@ -156,7 +157,7 @@ public class ScanResult extends Activity {
         });
     }
 
-    protected File SavetoFile(){
+    protected static File SavetoFile(String content, Boolean rec){
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             File sdCardDir = Environment.getExternalStorageDirectory();
             File StorageDir = new File(sdCardDir,"TS");
@@ -167,17 +168,19 @@ public class ScanResult extends Activity {
                 }
             }
 
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            File saveFile = null;
+            if(!rec)
+            saveFile = new File(StorageDir.getPath(), File.separator + timeStamp + ".txt");
+            else saveFile = new File(StorageDir.getPath(), File.separator + "Rec_" + timeStamp + ".txt");
 
-            File saveFile = new File(StorageDir.getPath(), File.separator + timeStamp + ".txt");
 
-            EditText editText = (EditText)findViewById(R.id.scan_result);
             FileOutputStream outStream;
             try {
                 outStream = new FileOutputStream(saveFile);
-                outStream.write(editText.getText().toString().getBytes());
+                outStream.write(content.getBytes());
                 outStream.close();
-                Toast.makeText(ScanResult.this,"Saved",Toast.LENGTH_LONG).show();
+
 
             } catch (Exception e) {
                 e.printStackTrace();
