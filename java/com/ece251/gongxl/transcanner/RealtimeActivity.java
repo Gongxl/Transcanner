@@ -50,6 +50,7 @@ public class RealtimeActivity extends Activity {
     private Handler handler;
     private BoxView boxView;
     private Button button_back;
+    private int threadCount = 0;
 
     private FrameLayout preview;
     public static final String DATA_PATH = Environment
@@ -180,7 +181,9 @@ public class RealtimeActivity extends Activity {
                                     baseApi.setImage(roi);
                                     final String recognizedText = baseApi.getUTF8Text();
                                     System.out.println(recognizedText);
-                                    /*new Thread() {
+                                    if(threadCount < 3) {
+                                        threadCount ++;
+                                        new Thread() {
                                         @Override
                                         public void run() {
                                             super.run();
@@ -189,11 +192,13 @@ public class RealtimeActivity extends Activity {
                                                 Message message = Message.obtain();
                                                 message.obj = translation;
                                                 handler.sendMessage(message);
+                                                threadCount --;
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
                                         }
-                                    }.start();*/
+                                    }.start();
+                                    }
                                 }
                             });
                         mode = 1;
