@@ -29,7 +29,7 @@ import java.util.Date;
 public class ScanResult extends Activity {
     Handler handler;
     String orig;
-    Boolean atTrans;
+    Boolean atTrans = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +59,7 @@ public class ScanResult extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                orig = editText.getText().toString();
+
                 editText.setText((String) msg.obj);
             }
         };
@@ -77,11 +77,14 @@ public class ScanResult extends Activity {
                             super.run();
                             try {
                                 if(!atTrans) {
+                                    orig = editText.getText().toString();
                                     String translated = Translator.translate(editText.getText().toString());
                                     Message message = Message.obtain();
                                     message.obj = translated;
                                     handler.sendMessage(message);
+                                    atTrans = true;
                                 }
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -119,6 +122,7 @@ public class ScanResult extends Activity {
                 // TODO Auto-generated method stub
                 EditText editText = (EditText)findViewById(R.id.scan_result);
                 editText.setText(orig);
+                atTrans = false;
             }
         });
     }
