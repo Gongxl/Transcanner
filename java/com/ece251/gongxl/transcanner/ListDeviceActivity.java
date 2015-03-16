@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,9 +30,18 @@ public class ListDeviceActivity extends Activity {
     private ArrayAdapter<String> newDevicesArrayAdapter;
     private ArrayAdapter<String> pairedDevicesArrayAdapter;
     private Button scanButton;
+    private BluetoothService bluetoothService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bluetoothService = SaveResult.getBluetoothService();
+
+        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
+        Log.i("Bluetooth", "Enable bluetooth");
+
+        bluetoothService.makeDiscoverable();
+        Log.i("Bluetooth", "Visible");
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_list_devices);
