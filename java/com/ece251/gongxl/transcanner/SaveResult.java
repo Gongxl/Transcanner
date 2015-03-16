@@ -155,26 +155,26 @@ public class SaveResult extends Activity {
 //        }
 //    }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Performing this check in onResume() covers the case in which BT was
-//        // not enabled during onStart(), so we were paused to enable it...
-//        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-//        if (bluetoothService != null && bluetoothService.isOn()) {
-//            // Only if the state is STATE_NONE, do we know that we haven't started already
-//            if (bluetoothService.getState() == BluetoothService.STATE_IDLE) {
-//                // Start the Bluetooth chat services
-//                bluetoothService.startListening();
-//
-//            }
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        if (bluetoothService != null && bluetoothService.isOn()) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (bluetoothService.getState() == BluetoothService.STATE_IDLE) {
+                // Start the Bluetooth chat services
+                bluetoothService.startListening();
+
+            }
+        }
+//        else {
+//            Toast.makeText(this,
+//                    R.string.prompt_turn_on,
+//                    Toast.LENGTH_LONG).show();
 //        }
-////        else {
-////            Toast.makeText(this,
-////                    R.string.prompt_turn_on,
-////                    Toast.LENGTH_LONG).show();
-////        }
-//    }
+    }
 //
 //    private void connectDevice(Intent data) {
 //        // Get the device MAC address
