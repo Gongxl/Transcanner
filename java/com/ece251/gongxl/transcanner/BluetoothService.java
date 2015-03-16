@@ -25,9 +25,8 @@ public class BluetoothService {
     private static final String SERVICE_NAME = "TRANSCANNER_SHARE";
     // Member fields
     private final BluetoothAdapter bluetoothAdapter;
-    private final Handler controlHandler;
-    private Handler canvasHandler;
-    private final Context context;
+    private Handler handler;
+    private Context context;
     /**
      * acceptThread is run in block mode, waiting
      * for the other devices connect request
@@ -50,8 +49,6 @@ public class BluetoothService {
     public static final boolean SWITCH_ON = true;
     public static final boolean SWITCH_OFF = false;
 
-
-
     // Constants that indicate the message
     public static final int MESSAGE_STATE_CHANGE = 0;
     public static final int MESSAGE_DEVICE_NAME = 1;
@@ -64,22 +61,26 @@ public class BluetoothService {
     public static final int THREAD_LISTENING = 0;
     public static final int THREAD_CONNECTING = 1;
     public static final int THREAD_COMMUNICATION = 2;
+
+    private static BluetoothService bluetoothService;
+
     /**
      * Constructor. Prepares a new BluetoothChat session.
      *
-     * @param context The UI Activity Context
-     * @param handler A Handler to send messages back to the UI Activity
      */
-    public BluetoothService(Context context, Handler handler) {
+    private BluetoothService() {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.serviceState = STATE_IDLE;
-        this.controlHandler = handler;
-        this.context = context;
     }
 
-    public void setCanvasHandler(Handler handler) {
-        this.canvasHandler = handler;
+    public static BluetoothService getBluetoothService(Context context, Handler handler) {
+        if(bluetoothService == null)
+            bluetoothService = new BluetoothService();
+        bluetoothService.context = context;
+        bluetoothService.handler = handler;
+        return bluetoothService;
     }
+
 
     public synchronized void startListening() {
         // Cancel any thread attempting to make a connection
@@ -188,10 +189,7 @@ public class BluetoothService {
         Message message = Message.obtain();
         message.arg1 = messageType;
         message.obj = text;
-        if(messageType == MESSAGE_DRAWING)
-            this.canvasHandler.sendMessage(message);
-        else
-            this.controlHandler.sendMessage(message);
+        this.handler.sendMessage(message);
     }
 
     private synchronized void shutThread(int threadType) {
