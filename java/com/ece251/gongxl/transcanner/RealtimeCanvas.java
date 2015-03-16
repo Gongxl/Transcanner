@@ -125,7 +125,7 @@ public class RealtimeCanvas extends ActionBarActivity {
             Intent findDeviceIntent = new Intent();
             findDeviceIntent.setClass(RealtimeCanvas.this,
                     ListDeviceActivity.class);
-            startActivityForResult(findDeviceIntent, REQUEST_CANVAS);
+            startActivityForResult(findDeviceIntent, REQUEST_FIND_DEVICES);
 
             Log.i("Bluetooth", "Find device");
             return true;
@@ -154,6 +154,7 @@ public class RealtimeCanvas extends ActionBarActivity {
                     Toast.makeText(this,
                             R.string.connecting,
                             Toast.LENGTH_LONG).show();
+                    System.out.println("onActivityResult_OK");
                     connectDevice(data);
 
                     break;
