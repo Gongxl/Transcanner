@@ -55,9 +55,7 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
     public void startService() {
         if(googleApiClient.isConnected()
                 || googleApiClient.isConnecting())
-            Toast.makeText(context,
-                    R.string.prompt_already_connected,
-                    Toast.LENGTH_LONG).show();
+            System.out.println(R.string.prompt_already_connected);
         else googleApiClient.connect();
     }
 
@@ -65,10 +63,10 @@ public class LocationService implements GoogleApiClient.ConnectionCallbacks,
         if(googleApiClient.isConnected()
                 || googleApiClient.isConnecting())
             googleApiClient.disconnect();
-        else
-            Toast.makeText(context,
-                    R.string.prompt_already_disconnected,
-                    Toast.LENGTH_LONG).show();
+//        else
+//            Toast.makeText(context,
+//                    R.string.prompt_already_disconnected,
+//                    Toast.LENGTH_LONG).show();
     }
 
     @Override

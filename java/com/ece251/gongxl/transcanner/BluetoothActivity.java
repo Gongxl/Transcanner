@@ -37,16 +37,11 @@ public class BluetoothActivity extends Activity {
         bluetoothService = new BluetoothService(this, handler);
 
 
-        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
-        Log.i("Bluetooth", "Enable bluetooth");
-//        try {
-//            Thread.currentThread().sleep(10000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-        bluetoothService.makeDiscoverable();
-        Log.i("Bluetooth", "Visible");
+//        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
+//        Log.i("Bluetooth", "Enable bluetooth");
+//
+//        bluetoothService.makeDiscoverable();
+//        Log.i("Bluetooth", "Visible");
 
         Button find_btn = (Button)findViewById(R.id.find);
         find_btn.setOnClickListener(new View.OnClickListener() {

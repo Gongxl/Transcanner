@@ -84,7 +84,6 @@ public class MainMenu extends Activity {
                                 popupWindow.dismiss();
                             }
                         });
-////////huangchong
                         popupWindow.showAtLocation(findViewById(R.id.menu), Gravity.CENTER, 0, 0);
 
                     }

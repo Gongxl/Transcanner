@@ -210,7 +210,7 @@ public class RealtimeActivity extends Activity {
                         button_back.setText("Start");
                         mode=0;
                         Intent intent = new Intent();
-                        intent.setClass(RealtimeActivity.this, CameraActivity.class);
+                        intent.setClass(RealtimeActivity.this, MainMenu.class);
                         startActivity(intent);
                         finish();
                       }
