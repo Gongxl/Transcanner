@@ -27,11 +27,10 @@ public class SaveResult extends Activity {
     private LocationService locationService;
     private TabHost myTabHost;
 
-//    private static BluetoothService bluetoothService;
+    private static BluetoothService bluetoothService;
     private final static int REQUEST_FIND_DEVICES = 0;
     private final static int REQUEST_CANVAS = 1;
-//    String connectedDeviceName;
-    private BluetoothService bluetoothService;
+    String connectedDeviceName;
     String content;
     String filepath;
 
@@ -68,7 +67,7 @@ public class SaveResult extends Activity {
             }
         });
 
-        bluetoothService = MainMenu.getBluetoothService();
+        bluetoothService = new BluetoothService(this, handler);
 
 //
 //        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
@@ -94,10 +93,6 @@ public class SaveResult extends Activity {
 
             @Override
             public void onClick(View v) {
-                bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
-                Log.i("Bluetooth", "Enable bluetooth");
-                bluetoothService.makeDiscoverable();
-                Log.i("Bluetooth", "Visible");
                 // TODO Auto-generated method stub
                 Intent findDeviceIntent = new Intent();
                 findDeviceIntent.setClass(SaveResult.this,
@@ -137,134 +132,134 @@ public class SaveResult extends Activity {
         });
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == REQUEST_FIND_DEVICES) {
-//            switch(resultCode) {
-//                case Activity.RESULT_CANCELED:
-//                    Toast.makeText(this,
-//                            R.string.exit_find_device,
-//                            Toast.LENGTH_LONG).show();
-//                    break;
-//                case Activity.RESULT_OK:
-//                    Toast.makeText(this,
-//                            R.string.connecting,
-//                            Toast.LENGTH_LONG).show();
-//                    connectDevice(data);
-//
-//                    break;
-//            }
-//        }
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_FIND_DEVICES) {
+            switch(resultCode) {
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(this,
+                            R.string.exit_find_device,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                case Activity.RESULT_OK:
+                    Toast.makeText(this,
+                            R.string.connecting,
+                            Toast.LENGTH_LONG).show();
+                    connectDevice(data);
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Performing this check in onResume() covers the case in which BT was
-//        // not enabled during onStart(), so we were paused to enable it...
-//        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-//        if (bluetoothService != null && bluetoothService.isOn()) {
-//            // Only if the state is STATE_NONE, do we know that we haven't started already
-//            if (bluetoothService.getState() == BluetoothService.STATE_IDLE) {
-//                // Start the Bluetooth chat services
-//                bluetoothService.startListening();
-//
-//            }
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        if (bluetoothService != null && bluetoothService.isOn()) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (bluetoothService.getState() == BluetoothService.STATE_IDLE) {
+                // Start the Bluetooth chat services
+                bluetoothService.startListening();
+
+            }
+        }
+//        else {
+//            Toast.makeText(this,
+//                    R.string.prompt_turn_on,
+//                    Toast.LENGTH_LONG).show();
 //        }
-////        else {
-////            Toast.makeText(this,
-////                    R.string.prompt_turn_on,
-////                    Toast.LENGTH_LONG).show();
-////        }
-//    }
-//
-//    private void connectDevice(Intent data) {
-//        // Get the device MAC address
-//        String address = data.getExtras()
-//                .getString(ListDeviceActivity.EXTRA_DEVICE_ADDRESS);
-//
-//        // Attempt to connect to the device
-//        bluetoothService.startConnecting(address);
-//    }
-//
-//
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.arg1) {
-//                case BluetoothService.MESSAGE_STATE_CHANGE:
-//                    switch (Integer.valueOf((String)msg.obj)) {
-//                        case BluetoothService.STATE_COMMUNICATING:
+    }
+
+    private void connectDevice(Intent data) {
+        // Get the device MAC address
+        String address = data.getExtras()
+                .getString(ListDeviceActivity.EXTRA_DEVICE_ADDRESS);
+
+        // Attempt to connect to the device
+        bluetoothService.startConnecting(address);
+    }
+
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.arg1) {
+                case BluetoothService.MESSAGE_STATE_CHANGE:
+                    switch (Integer.valueOf((String)msg.obj)) {
+                        case BluetoothService.STATE_COMMUNICATING:
+                            Toast.makeText(getApplicationContext(),
+                                    "Connected to " + connectedDeviceName,
+                                    Toast.LENGTH_SHORT).show();
+                            bluetoothService.sendFile(content);
+                            Log.i("Bluetooth", "Send successfully");
+                            Toast.makeText(getApplicationContext(),
+                                    "Finished! " + connectedDeviceName,
+                                    Toast.LENGTH_SHORT).show();
+
+                            break;
+                        case BluetoothService.STATE_CONNECTING:
+                            Toast.makeText(getApplicationContext(),
+                                    R.string.connecting,
+                                    Toast.LENGTH_SHORT).show();
+                            break;
+                        case BluetoothService.STATE_LISTENING:
 //                            Toast.makeText(getApplicationContext(),
-//                                    "Connected to " + connectedDeviceName,
+//                                    R.string.prompt_listening,
 //                                    Toast.LENGTH_SHORT).show();
-//                            bluetoothService.sendFile(content);
-//                            Log.i("Bluetooth", "Send successfully");
-//                            Toast.makeText(getApplicationContext(),
-//                                    "Finished! " + connectedDeviceName,
-//                                    Toast.LENGTH_SHORT).show();
-//
-//                            break;
-//                        case BluetoothService.STATE_CONNECTING:
-//                            Toast.makeText(getApplicationContext(),
-//                                    R.string.connecting,
-//                                    Toast.LENGTH_SHORT).show();
-//                            break;
-//                        case BluetoothService.STATE_LISTENING:
-////                            Toast.makeText(getApplicationContext(),
-////                                    R.string.prompt_listening,
-////                                    Toast.LENGTH_SHORT).show();
-//                            break;
-//                        case BluetoothService.STATE_IDLE:
-//                            if(bluetoothService.isOn()) {
-//                                bluetoothService.startListening();
-//                            }
-//                            break;
-//                    }
-//                    break;
-//                case BluetoothService.MESSAGE_DEVICE_NAME:
-//                    connectedDeviceName = (String) msg.obj;
-//                    break;
-//                case BluetoothService.MESSAGE_CONNECTION_FAILED:
-//                    Toast.makeText(getApplicationContext(),
-//                            R.string.connection_fail,
-//                            Toast.LENGTH_SHORT).show();
-//                    break;
-//                case BluetoothService.MESSAGE_CONNECTION_LOST:
-//                    Toast.makeText(getApplicationContext(),
-//                            R.string.connection_lost,
-//                            Toast.LENGTH_SHORT).show();
-//                    break;
-//                case BluetoothService.MESSAGE_READ:
-//                    String text = (String) msg.obj;
-//                    // construct a string from the valid bytes in the buffer
-//
-//                    Toast.makeText(getApplicationContext(),
-//                            R.string.prompt_receive_message,
-//                            Toast.LENGTH_SHORT).show();
-//                    break;
-//                case BluetoothService.MESSAGE_WRITE:
-//                    String echo = (String) msg.obj;
-//                    System.out.println("message signal received" + echo);
-//                    if(echo == "EOF")
-//                    Toast.makeText(getApplicationContext(),
-//                            "Finish sending!",
-//                            Toast.LENGTH_LONG).show();
-//                    break;
-//            }
-//        }
-//    };
-//
+                            break;
+                        case BluetoothService.STATE_IDLE:
+                            if(bluetoothService.isOn()) {
+                                bluetoothService.startListening();
+                            }
+                            break;
+                    }
+                    break;
+                case BluetoothService.MESSAGE_DEVICE_NAME:
+                    connectedDeviceName = (String) msg.obj;
+                    break;
+                case BluetoothService.MESSAGE_CONNECTION_FAILED:
+                    Toast.makeText(getApplicationContext(),
+                            R.string.connection_fail,
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                case BluetoothService.MESSAGE_CONNECTION_LOST:
+                    Toast.makeText(getApplicationContext(),
+                            R.string.connection_lost,
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                case BluetoothService.MESSAGE_READ:
+                    String text = (String) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+
+                    Toast.makeText(getApplicationContext(),
+                            R.string.prompt_receive_message,
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                case BluetoothService.MESSAGE_WRITE:
+                    String echo = (String) msg.obj;
+                    System.out.println("message signal received" + echo);
+                    if(echo == "EOF")
+                    Toast.makeText(getApplicationContext(),
+                            "Finish sending!",
+                            Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
+
     @Override
     public void onStop(){
         super.onStop();
         locationService.stopService();
         bluetoothService.stopService();
     }
-//
-//    static BluetoothService getBluetoothService(){
-//        return bluetoothService;
-//    }
+
+    static BluetoothService getBluetoothService(){
+        return bluetoothService;
+    }
 }
