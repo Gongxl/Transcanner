@@ -172,11 +172,11 @@ public class MainMenu extends Activity {
                             Toast.makeText(getApplicationContext(),
                                     "Connected to " + connectedDeviceName,
                                     Toast.LENGTH_SHORT).show();
-                            bluetoothService.sendFile(content);
-                            Log.i("Bluetooth", "Send successfully");
-                            Toast.makeText(getApplicationContext(),
-                                    "Finished! " + connectedDeviceName,
-                                    Toast.LENGTH_SHORT).show();
+//                            bluetoothService.sendFile(content);
+//                            Log.i("Bluetooth", "Send successfully");
+//                            Toast.makeText(getApplicationContext(),
+//                                    "Finished! " + connectedDeviceName,
+//                                    Toast.LENGTH_SHORT).show();
 
                             break;
                         case BluetoothService.STATE_CONNECTING:

@@ -100,7 +100,11 @@ public class SaveResult extends Activity {
                 findDeviceIntent.setClass(SaveResult.this,
                         ListDeviceActivity.class);
                 startActivityForResult(findDeviceIntent, REQUEST_FIND_DEVICES);
-
+                bluetoothService.sendFile(content);
+                Log.i("Bluetooth", "Send successfully");
+                Toast.makeText(getApplicationContext(),
+                        "Finished! ",
+                        Toast.LENGTH_SHORT).show();
                 Log.i("Bluetooth", "Find device");
             }
         });
