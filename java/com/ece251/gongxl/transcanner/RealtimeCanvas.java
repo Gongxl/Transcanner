@@ -19,6 +19,7 @@ public class RealtimeCanvas extends ActionBarActivity {
     private CanvasView canvasView;
     private BluetoothService bluetoothService;
     private Handler handler;
+    private String connectedDeviceName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,21 +28,77 @@ public class RealtimeCanvas extends ActionBarActivity {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+
                 switch (msg.arg1) {
                     case BluetoothService.MESSAGE_DRAWING:
                         System.out.println("draw message received");
                         canvasView.addDrawing((String) msg.obj);
                         break;
+                    case BluetoothService.MESSAGE_STATE_CHANGE:
+                        switch (Integer.valueOf((String)msg.obj)) {
+                            case BluetoothService.STATE_COMMUNICATING:
+                                Toast.makeText(getApplicationContext(),
+                                        "Connected to " + connectedDeviceName,
+                                        Toast.LENGTH_SHORT).show();
+
+                                break;
+                            case BluetoothService.STATE_CONNECTING:
+                                Toast.makeText(getApplicationContext(),
+                                        R.string.connecting,
+                                        Toast.LENGTH_SHORT).show();
+                                break;
+                            case BluetoothService.STATE_LISTENING:
+                                Toast.makeText(getApplicationContext(),
+                                        R.string.prompt_listening,
+                                        Toast.LENGTH_SHORT).show();
+                                break;
+                            case BluetoothService.STATE_IDLE:
+                                if(bluetoothService.isOn()) {
+                                    bluetoothService.startListening();
+                                }
+                                break;
+                        }
+                        break;
+                    case BluetoothService.MESSAGE_DEVICE_NAME:
+                        connectedDeviceName = (String) msg.obj;
+                        break;
+                    case BluetoothService.MESSAGE_CONNECTION_FAILED:
+                        Toast.makeText(getApplicationContext(),
+                                R.string.connection_fail,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case BluetoothService.MESSAGE_CONNECTION_LOST:
+                        Toast.makeText(getApplicationContext(),
+                                R.string.connection_lost,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case BluetoothService.MESSAGE_READ:
+                        String text = (String) msg.obj;
+                        System.out.println(text);
+                        // construct a string from the valid bytes in the buffer
+
+                        Toast.makeText(getApplicationContext(),
+                                R.string.prompt_receive_message,
+                                Toast.LENGTH_SHORT).show();
+
+
+                        break;
+                    case BluetoothService.MESSAGE_WRITE:
+                        String echo = (String) msg.obj;
+                        System.out.println("message signal received" + echo);
+                        Toast.makeText(getApplicationContext(),
+                                "Message " + echo + "sent",
+                                Toast.LENGTH_LONG).show();
+                        break;
                 }
             }
         };
-        bluetoothService = MainMenu.getBluetoothService();
+        bluetoothService = BluetoothService.getBluetoothService(getApplicationContext(),handler);
         bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
         Log.i("Canvas", "Enable bluetooth");
         bluetoothService.makeDiscoverable();
         Log.i("Canvas", "Visible");
         bluetoothService.send("canvas view");
-        bluetoothService.setCanvasHandler(handler);
         canvas = (LinearLayout) findViewById(R.id.canvasView);
         canvasView = new CanvasView(getApplicationContext(), bluetoothService);
         canvas.addView(canvasView);
