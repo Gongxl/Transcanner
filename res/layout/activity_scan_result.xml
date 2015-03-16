@@ -5,7 +5,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.ece251.gongxl.transcanner.ScanResult"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/showScanResult">
 
     <EditText android:id="@+id/scan_result"
 
@@ -43,6 +44,16 @@
         android:layout_weight="1"
 
         android:src="@drawable/home"
+        android:background="@android:color/transparent"/>
+
+    <ImageButton
+        android:id="@+id/backtoscan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        android:layout_weight="1"
+
+        android:src="@drawable/scan2"
         android:background="@android:color/transparent"/>
 
     <ImageButton

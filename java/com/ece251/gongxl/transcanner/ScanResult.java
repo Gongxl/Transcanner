@@ -8,8 +8,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -26,7 +28,7 @@ import java.util.Date;
 
 public class ScanResult extends Activity {
     Handler handler;
-    private PopupWindow save_popup;
+    String orig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class ScanResult extends Activity {
         Intent intent = getIntent();
         final String ocr_result = intent.getStringExtra("OCR");
         editText.setText(ocr_result);
+        orig = ocr_result;
 
         ImageButton b1 = (ImageButton)findViewById(R.id.home);
         b1.setOnClickListener(new Button.OnClickListener() {
@@ -56,8 +59,7 @@ public class ScanResult extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-
-
+                orig = editText.getText().toString();
                 editText.setText((String) msg.obj);
             }
         };
@@ -93,15 +95,6 @@ public class ScanResult extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-
-//                if (save_popup != null&&save_popup.isShowing()) {
-//                    save_popup.dismiss();
-//                    return;
-//                } else {
-//                    initmPopupWindowView();
-//
-//                    save_popup.showAtLocation(findViewById(R.id.save),Gravity.BOTTOM,0,0);
-//                }
                 EditText editText = (EditText)findViewById(R.id.scan_result);
                 Log.i("editText",editText.getText().toString());
                 String filepath = SavetoFile(editText.getText().toString(),false).getPath();
@@ -115,48 +108,20 @@ public class ScanResult extends Activity {
                 finish();
             }
         });
+
+        ImageButton b4 = (ImageButton)findViewById(R.id.backtoscan);
+        b4.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                EditText editText = (EditText)findViewById(R.id.scan_result);
+                editText.setText(orig);
+            }
+        });
     }
 
-    public void initmPopupWindowView() {
-        View customView = null;
-        customView = getLayoutInflater().inflate(R.layout.save_popup, null, false);
-        save_popup = new PopupWindow(customView, 450, 150);
-        // 使其聚集 要想监听菜单里控件的事件就必须要调用此方法
-        save_popup.setFocusable(true);
-        save_popup.setAnimationStyle(R.style.AnimationPreview);
-        // 自定义view添加触摸事件
-        customView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (save_popup != null && save_popup.isShowing()) {
-                    save_popup.dismiss();
-                    save_popup = null;
-                }
-                return false;
-            }
-        });
-        LinearLayout layoutEffect1 = (LinearLayout) customView.findViewById(R.id.layout_effect_hj);
-        layoutEffect1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ScanResult.this, "效果-怀旧", Toast.LENGTH_SHORT).show();
-            }
-        });
-        LinearLayout layoutEffect2 = (LinearLayout) customView.findViewById(R.id.layout_effect_fd);
-        layoutEffect2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ScanResult.this, "效果-浮雕", Toast.LENGTH_SHORT).show();
-            }
-        });
-        LinearLayout layoutEffect3 = (LinearLayout) customView.findViewById(R.id.layout_effect_gz);
-        layoutEffect3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ScanResult.this, "效果-光照", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+
 
     protected static File SavetoFile(String content, Boolean rec){
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){

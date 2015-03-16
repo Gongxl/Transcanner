@@ -114,5 +114,10 @@ public class SaveResult extends Activity {
         });
     }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+        locationService.stopService();
+    }
 
 }
