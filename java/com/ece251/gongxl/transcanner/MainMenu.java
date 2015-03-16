@@ -168,6 +168,7 @@ public class MainMenu extends Activity {
                 case BluetoothService.MESSAGE_STATE_CHANGE:
                     switch (Integer.valueOf((String)msg.obj)) {
                         case BluetoothService.STATE_COMMUNICATING:
+                            System.out.println("In MainMenu: startCommunication!");
                             Toast.makeText(getApplicationContext(),
                                     "Connected to " + connectedDeviceName,
                                     Toast.LENGTH_SHORT).show();
@@ -179,16 +180,22 @@ public class MainMenu extends Activity {
 
                             break;
                         case BluetoothService.STATE_CONNECTING:
+
+                            System.out.println("In MainMenu: startConnection!");
                             Toast.makeText(getApplicationContext(),
                                     R.string.connecting,
                                     Toast.LENGTH_SHORT).show();
                             break;
                         case BluetoothService.STATE_LISTENING:
+
+                            System.out.println("In MainMenu: startListening!");
 //                            Toast.makeText(getApplicationContext(),
 //                                    R.string.prompt_listening,
 //                                    Toast.LENGTH_SHORT).show();
                             break;
                         case BluetoothService.STATE_IDLE:
+
+                            System.out.println("In MainMenu: startIdle!");
                             if(bluetoothService.isOn()) {
                                 bluetoothService.startListening();
                             }
