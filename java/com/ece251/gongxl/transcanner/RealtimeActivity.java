@@ -1,53 +1,39 @@
 package com.ece251.gongxl.transcanner;
 
 
-        import java.io.BufferedOutputStream;
-        import java.io.ByteArrayOutputStream;
-        import java.io.File;
-        import java.io.FileNotFoundException;
-        import java.io.FileOutputStream;
-        import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-        import java.io.InputStream;
-        import java.io.OutputStream;
-        import java.text.SimpleDateFormat;
-        import java.util.Date;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-        import android.content.res.AssetManager;
-        import android.graphics.Canvas;
-        import android.graphics.Color;
-        import android.graphics.Paint;
-        import android.graphics.Rect;
-        import android.graphics.YuvImage;
-        import android.os.AsyncTask;
-        import android.support.v7.app.ActionBarActivity;
-        import android.support.v7.app.ActionBar;
-        import android.support.v4.app.Fragment;
-        import android.app.Activity;
-        import android.content.Intent;
-        import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
-        import android.graphics.Matrix;
-        import android.hardware.Camera;
-        import android.hardware.Camera.AutoFocusCallback;
-        import android.hardware.Camera.PictureCallback;
-        import android.media.FaceDetector;
-        import android.os.Bundle;
-        import android.os.Environment;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.view.Window;
-        import android.view.WindowManager;
-        import android.widget.Button;
-        import android.widget.FrameLayout;
-        import android.os.Build;
-        import android.widget.TextView;
+import android.content.res.AssetManager;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.os.AsyncTask;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.hardware.Camera;
+import android.hardware.Camera.AutoFocusCallback;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
-        import com.googlecode.tesseract.android.TessBaseAPI;
+import com.googlecode.tesseract.android.TessBaseAPI;
 
 
 public class RealtimeActivity extends Activity {
@@ -57,15 +43,15 @@ public class RealtimeActivity extends Activity {
     public static int screenHeight;
     private CameraPreview mPreview;
     //private TextView textView;
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
-    final CharSequence str_addmask = "Add Mask";
     public static Bitmap image;
-    public static int num=0;
+    public static int num = 0;
     public static int mode = 0;
-    private AutoFocusCallback myAutoFocusCallback = null;
-    public  Paint mPaint = new Paint();
+    public Paint mPaint = new Paint();
     private int bleft, bright, btop, bbottom;
+    private int frameCount;
+    private BoxView boxView;
+    private Button button_back;
+    private FrameLayout preview;
     public static final String DATA_PATH = Environment
             .getExternalStorageDirectory().toString() + "/SimpleAndroidOCR/";
 
@@ -73,10 +59,8 @@ public class RealtimeActivity extends Activity {
     private static final String TAG = "RealtimeActivity.java";
     public TessBaseAPI baseApi;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        String[] paths = new String[] { DATA_PATH, DATA_PATH + "tessdata/" };
+    private void initializeOCR() {
+        String[] paths = new String[]{DATA_PATH, DATA_PATH + "tessdata/"};
 
         for (String path : paths) {
             File dir = new File(path);
@@ -88,7 +72,6 @@ public class RealtimeActivity extends Activity {
                     Log.v(TAG, "Created directory " + path + " on sdcard");
                 }
             }
-
         }
 
         // lang.traineddata file with the app (in assets folder)
@@ -114,27 +97,28 @@ public class RealtimeActivity extends Activity {
                 in.close();
                 //gin.close();
                 out.close();
-
                 Log.v(TAG, "Copied " + lang + " traineddata");
             } catch (IOException e) {
                 Log.e(TAG, "Was unable to copy " + lang + " traineddata " + e.toString());
             }
         }
+    }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        screenWidth  = getWindowManager().getDefaultDisplay().getWidth();       // 屏幕宽（像素，如：480px）
-        screenHeight = getWindowManager().getDefaultDisplay().getHeight();      // 屏幕高（像素，如：800p）
-        bleft = (int)(screenWidth * 0.2);
-        bright = (int)(screenWidth * 0.8);
-        btop = (int)(screenHeight * 0.2);
-        bbottom = (int)(screenHeight * 0.25); /////
-
         setContentView(R.layout.realtimeactivity);
 
+        screenWidth = getWindowManager().getDefaultDisplay().getWidth();       // 屏幕宽（像素，如：480px）
+        screenHeight = getWindowManager().getDefaultDisplay().getHeight();      // 屏幕高（像素，如：800p）
+        bleft = (int) (screenWidth * 0.2);
+        bright = (int) (screenWidth * 0.8);
+        btop = (int) (screenHeight * 0.2);
+        bbottom = (int) (screenHeight * 0.25); /////
 
         mPaint.setColor(Color.RED);
         mPaint.setAntiAlias(true);
@@ -147,101 +131,90 @@ public class RealtimeActivity extends Activity {
 
         // Create our Preview view and set it as the content of our activity.
         mPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        final BoxView boxView = (BoxView) findViewById(R.id.boxview);
-        boxView.setPos(bleft,bright,btop,bbottom);
+        preview = (FrameLayout) findViewById(R.id.camera_preview);
+        boxView = (BoxView) findViewById(R.id.boxview);
+        boxView.setPos(bleft, bright, btop, bbottom);
         preview.addView(mPreview);
-        //textView = (TextView)findViewById(R.id.textview);
-/*
-        mCamera.setPreviewCallback(new Camera.PreviewCallback(){
-            public void onPreviewFrame(byte[] data, Camera camera) {
-                num++;
-                Log.d("===>", "onPreviewFrame" + num);
-                textView.setText("onPreviewFrame" + num);
-            }
-        });
-*/
-        final Button button_back = (Button) findViewById(R.id.button_back);
+
+        initializeOCR();
+        frameCount = 0;
+
+        button_back = (Button) findViewById(R.id.button_back);
         button_back.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                      if(mode == 0) {
-                          num=0;
-                          baseApi = new TessBaseAPI();
-                          baseApi.setDebug(true);
-                          baseApi.init(DATA_PATH, lang);
-                          //mCamera.autoFocus(myAutoFocusCallback);
-                          mCamera.setPreviewCallback(new Camera.PreviewCallback() {
-                              public void onPreviewFrame(byte[] data, Camera camera) {
-                                  Camera.Parameters parameters = camera.getParameters();
-                                  int width = parameters.getPreviewSize().width;
-                                  int height = parameters.getPreviewSize().height;
-                                  YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mode == 0) {
+                        num = 0;
+                        baseApi = new TessBaseAPI();
+                        baseApi.setDebug(true);
+                        baseApi.init(DATA_PATH, lang);
+                        //mCamera.autoFocus(myAutoFocusCallback);
+                        mCamera.setPreviewCallback(
+                            new Camera.PreviewCallback() {
+                                public void onPreviewFrame(byte[] data, Camera camera) {
+                                    if(frameCount ++ != 1) {
+                                        return;
+                                    }
+                                    frameCount = 0;
+                                    Camera.Parameters parameters;
+                                    parameters = camera.getParameters();
+                                    int width = parameters.getPreviewSize().width;
+                                    int height = parameters.getPreviewSize().height;
+                                    YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
 
-                                  ByteArrayOutputStream out = new ByteArrayOutputStream();
-                                  yuv.compressToJpeg(new Rect(0, 0, width, height), 50, out);
+                                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                    yuv.compressToJpeg(new Rect(0, 0, width, height), 50, out);
 
-                                  byte[] bytes = out.toByteArray();
-                                  final Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                  Bitmap photo = createPhotos(bitmap);
-                                  Bitmap roi = Bitmap.createBitmap(photo, (int)(0.2*height),(int)(0.2*width),(int)(0.6*height), (int)(0.05*width));/////
-                                  roi = roi.copy(Bitmap.Config.ARGB_8888, true);
-
-
-                                  baseApi.setImage(roi);
-
-                                  String recognizedText = baseApi.getUTF8Text();
-                                  //textView.setText(recognizedText);
-                                  boxView.displayText(recognizedText);
-
-                              }
-                          });
-                          mode = 1;
-                          button_back.setText("Back");
-                          return;
-                      }else {
-
-                        mPreview.getHolder().removeCallback(mPreview);
-                        mCamera.stopPreview();
-                        mCamera.setPreviewCallback(null);
-                        mCamera.release();
-                        mCamera = null;
-                        button_back.setText("Start");
-                        mode=0;
-                        Intent intent = new Intent();
-                        intent.setClass(RealtimeActivity.this, MainMenu.class);
-                        startActivity(intent);
-                        finish();
-                      }
+                                    byte[] bytes = out.toByteArray();
+                                    final Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    Bitmap photo = createPhotos(bitmap);
+                                    Bitmap roi = Bitmap.createBitmap(photo, (int) (0.2 * height), (int) (0.2 * width), (int) (0.6 * height), (int) (0.05 * width));/////
+                                    roi = roi.copy(Bitmap.Config.ARGB_8888, true);
+                                    baseApi.setImage(roi);
+                                    String recognizedText = baseApi.getUTF8Text();
+                                    System.out.println(recognizedText);
+                                    boxView.displayText(recognizedText);
+                                }
+                            });
+                        mode = 1;
+                        button_back.setText("Back");
+                        return;
+                        } else {
+                            mPreview.getHolder().removeCallback(mPreview);
+                            mCamera.stopPreview();
+                            mCamera.setPreviewCallback(null);
+                            mCamera.release();
+                            mCamera = null;
+                            button_back.setText("Start");
+                            mode = 0;
+                            Intent intent = new Intent();
+                            intent.setClass(RealtimeActivity.this, MainMenu.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 }
         );
-
     }
 
-    public static Bitmap createPhotos(Bitmap bitmap){
-        if(bitmap!=null){
-            Matrix m=new Matrix();
-            try{
-                m.setRotate(90, bitmap.getWidth()/2, bitmap.getHeight()/2);//90就是我们需要选择的90度
-                /*Log.i("TAG", "W/H/w/h " +  screenWidth + screenHeight + bitmap.getHeight() + bitmap.getWidth());
-                float scale_width = (float)screenWidth / (float)bitmap.getHeight();
-                float scale_height = (float)screenHeight / (float)bitmap.getWidth();
-                Log.i("TAG", "scale w/h" + scale_width + " "+ scale_height);
-                m.postScale(scale_width, scale_height);*/
-                Bitmap bmp2=Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+    public static Bitmap createPhotos(Bitmap bitmap) {
+        if (bitmap != null) {
+            Matrix m = new Matrix();
+            try {
+                m.setRotate(90, bitmap.getWidth() / 2, bitmap.getHeight() / 2);//90就是我们需要选择的90度
+                Bitmap bmp2 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
                 bitmap.recycle();
-                bitmap=bmp2;
-            }catch(Exception ex){
-                System.out.print("Failed"+ex);
+                bitmap = bmp2;
+            } catch (Exception ex) {
+                System.out.print("Failed" + ex);
             }
         }
         return bitmap;
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
     }
 
@@ -251,33 +224,19 @@ public class RealtimeActivity extends Activity {
     }
 
     @Override
-    protected void onPause() { super.onPause(); mode=0; /*baseApi.end();*/}
-
-    private class TransTask extends AsyncTask<Void, Void, Void> {
-
-        private byte[] mData;
-        //构造函数
-        TransTask(byte[] data){
-            this.mData = data;
-        }
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-            num++;
-            Log.d("===>", "onPreviewFrame" + num);
-            //textView.setText("onPreviewFrame" + num);
-            return null;
-        }
-
+    protected void onPause() {
+        super.onPause();
+        mode = 0; /*baseApi.end();*/
     }
 
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
+    /**
+     * A safe way to get an instance of the Camera object.
+     */
+    public static Camera getCameraInstance() {
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             // Camera is not available (in use or does not exist)
         }
         return c; // returns null if camera is unavailable

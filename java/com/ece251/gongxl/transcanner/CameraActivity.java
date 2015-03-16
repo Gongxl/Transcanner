@@ -1,42 +1,22 @@
 package com.ece251.gongxl.transcanner;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.PictureCallback;
-import android.media.FaceDetector;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.os.Build;
-
-
-
 
 public class CameraActivity extends Activity {
 
@@ -134,24 +114,6 @@ public class CameraActivity extends Activity {
                     }
                 }
         );
-
-//        final Button button_realtime = (Button) findViewById(R.id.button_realtime);
-//        button_realtime.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        mPreview.getHolder().removeCallback(mPreview);
-//                        mCamera.stopPreview();
-//                        mCamera.setPreviewCallback(null);
-//                        mCamera.release();
-//                        mCamera = null;
-//                        Intent intent = new Intent();
-//                        intent.setClass(CameraActivity.this, RealtimeActivity.class);
-//                        startActivity(intent);
-//                        finish();
-//                    }
-//                }
-//        );
     }
 
 
