@@ -1,5 +1,6 @@
 package com.ece251.gongxl.transcanner;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,9 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class RealtimeCanvas extends ActionBarActivity {
     private static final int REQUEST_CANVAS = 1;
+    private static final int REQUEST_FIND_DEVICES = 0;
     private LinearLayout canvas;
     private CanvasView canvasView;
     private BluetoothService bluetoothService;
@@ -78,6 +81,35 @@ public class RealtimeCanvas extends ActionBarActivity {
     public void onStop(){
         super.onStop();
         bluetoothService.stopService();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_FIND_DEVICES) {
+            switch(resultCode) {
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(this,
+                            R.string.exit_find_device,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                case Activity.RESULT_OK:
+                    Toast.makeText(this,
+                            R.string.connecting,
+                            Toast.LENGTH_LONG).show();
+                    connectDevice(data);
+
+                    break;
+            }
+        }
+    }
+    private void connectDevice(Intent data) {
+        // Get the device MAC address
+        String address = data.getExtras()
+                .getString(ListDeviceActivity.EXTRA_DEVICE_ADDRESS);
+
+        // Attempt to connect to the device
+        bluetoothService.startConnecting(address);
     }
 }
 

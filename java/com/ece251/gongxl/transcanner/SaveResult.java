@@ -94,10 +94,7 @@ public class SaveResult extends Activity {
 
             @Override
             public void onClick(View v) {
-                bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
-                Log.i("Bluetooth", "Enable bluetooth");
-                bluetoothService.makeDiscoverable();
-                Log.i("Bluetooth", "Visible");
+
                 // TODO Auto-generated method stub
                 Intent findDeviceIntent = new Intent();
                 findDeviceIntent.setClass(SaveResult.this,
@@ -137,26 +134,26 @@ public class SaveResult extends Activity {
         });
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == REQUEST_FIND_DEVICES) {
-//            switch(resultCode) {
-//                case Activity.RESULT_CANCELED:
-//                    Toast.makeText(this,
-//                            R.string.exit_find_device,
-//                            Toast.LENGTH_LONG).show();
-//                    break;
-//                case Activity.RESULT_OK:
-//                    Toast.makeText(this,
-//                            R.string.connecting,
-//                            Toast.LENGTH_LONG).show();
-//                    connectDevice(data);
-//
-//                    break;
-//            }
-//        }
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_FIND_DEVICES) {
+            switch(resultCode) {
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(this,
+                            R.string.exit_find_device,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                case Activity.RESULT_OK:
+                    Toast.makeText(this,
+                            R.string.connecting,
+                            Toast.LENGTH_LONG).show();
+                    connectDevice(data);
+
+                    break;
+            }
+        }
+    }
 
 //    @Override
 //    public void onStart() {
@@ -179,14 +176,14 @@ public class SaveResult extends Activity {
 ////        }
 //    }
 //
-//    private void connectDevice(Intent data) {
-//        // Get the device MAC address
-//        String address = data.getExtras()
-//                .getString(ListDeviceActivity.EXTRA_DEVICE_ADDRESS);
-//
-//        // Attempt to connect to the device
-//        bluetoothService.startConnecting(address);
-//    }
+    private void connectDevice(Intent data) {
+        // Get the device MAC address
+        String address = data.getExtras()
+                .getString(ListDeviceActivity.EXTRA_DEVICE_ADDRESS);
+
+        // Attempt to connect to the device
+        bluetoothService.startConnecting(address);
+    }
 //
 //
 //    Handler handler = new Handler() {
