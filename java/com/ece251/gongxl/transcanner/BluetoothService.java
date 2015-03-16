@@ -78,7 +78,6 @@ public class BluetoothService {
             bluetoothService = new BluetoothService();
         bluetoothService.context = context;
         bluetoothService.handler = handler;
-
         return bluetoothService;
     }
 
@@ -107,24 +106,25 @@ public class BluetoothService {
         if(flag == SWITCH_ON) {
             if(!bluetoothAdapter.isEnabled()) {
                 Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                context.startActivity(turnOn);
-                Toast.makeText(context,
+                turnOn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                bluetoothService.context.startActivity(turnOn);
+                Toast.makeText(bluetoothService.context,
                         R.string.turn_on,
                         Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(context,
+                Toast.makeText(bluetoothService.context,
                         R.string.already_on,
                         Toast.LENGTH_LONG).show();
             }
         } else {
             if(flag == SWITCH_OFF) {
                 if(!bluetoothAdapter.isEnabled()) {
-                    Toast.makeText(context,
+                    Toast.makeText(bluetoothService.context,
                             R.string.already_off,
                             Toast.LENGTH_LONG).show();
                 } else {
                     bluetoothAdapter.disable();
-                    Toast.makeText(context,
+                    Toast.makeText(bluetoothService.context,
                             R.string.turn_off,
                             Toast.LENGTH_LONG).show();
                 }
@@ -137,7 +137,8 @@ public class BluetoothService {
                 BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
             Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            context.startActivity(discoverableIntent);
+            discoverableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            bluetoothService.context.startActivity(discoverableIntent);
         }
     }
     /**
@@ -187,6 +188,7 @@ public class BluetoothService {
     }
 
     private void syncMessage(int messageType, String text) {
+        if(handler == null) return;
         Message message = Message.obtain();
         message.arg1 = messageType;
         message.obj = text;
