@@ -159,7 +159,7 @@ public class RealtimeActivity extends Activity {
                         mCamera.setPreviewCallback(
                             new Camera.PreviewCallback() {
                                 public void onPreviewFrame(byte[] data, Camera camera) {
-                                    if(frameCount ++ != 5) {
+                                    if(frameCount ++ != 50) {
                                         return;
                                     }
                                     frameCount = 0;
@@ -194,8 +194,6 @@ public class RealtimeActivity extends Activity {
                                             }
                                         }
                                     }.start();
-
-                                    boxView.displayText(recognizedText);
                                 }
                             });
                         mode = 1;
