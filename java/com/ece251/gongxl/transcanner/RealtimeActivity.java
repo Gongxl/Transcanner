@@ -14,14 +14,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
-import android.os.AsyncTask;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
-import android.hardware.Camera.AutoFocusCallback;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -49,8 +47,10 @@ public class RealtimeActivity extends Activity {
     public Paint mPaint = new Paint();
     private int bleft, bright, btop, bbottom;
     private int frameCount;
+    private Handler handler;
     private BoxView boxView;
     private Button button_back;
+
     private FrameLayout preview;
     public static final String DATA_PATH = Environment
             .getExternalStorageDirectory().toString() + "/SimpleAndroidOCR/";
@@ -119,7 +119,13 @@ public class RealtimeActivity extends Activity {
         bright = (int) (screenWidth * 0.8);
         btop = (int) (screenHeight * 0.2);
         bbottom = (int) (screenHeight * 0.25); /////
-
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                boxView.displayText((String)msg.obj);
+            }
+        };
         mPaint.setColor(Color.RED);
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.STROKE);
@@ -153,7 +159,7 @@ public class RealtimeActivity extends Activity {
                         mCamera.setPreviewCallback(
                             new Camera.PreviewCallback() {
                                 public void onPreviewFrame(byte[] data, Camera camera) {
-                                    if(frameCount ++ != 1) {
+                                    if(frameCount ++ != 5) {
                                         return;
                                     }
                                     frameCount = 0;
@@ -172,8 +178,23 @@ public class RealtimeActivity extends Activity {
                                     Bitmap roi = Bitmap.createBitmap(photo, (int) (0.2 * height), (int) (0.2 * width), (int) (0.6 * height), (int) (0.05 * width));/////
                                     roi = roi.copy(Bitmap.Config.ARGB_8888, true);
                                     baseApi.setImage(roi);
-                                    String recognizedText = baseApi.getUTF8Text();
+                                    final String recognizedText = baseApi.getUTF8Text();
                                     System.out.println(recognizedText);
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            super.run();
+                                            try {
+                                                String translation = Translator.translate(recognizedText);
+                                                Message message = Message.obtain();
+                                                message.obj = translation;
+                                                handler.sendMessage(message);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }.start();
+
                                     boxView.displayText(recognizedText);
                                 }
                             });

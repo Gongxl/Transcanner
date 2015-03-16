@@ -317,6 +317,7 @@ public class BluetoothService {
                 try {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
+                    System.out.println("waiting for connection");
                     socket = serverSocket.accept();
                 } catch (IOException e) {
                     break;

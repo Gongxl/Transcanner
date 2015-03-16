@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class RealtimeCanvas extends ActionBarActivity {
-    private static final int REQUEST_CANVAS = 1;
     private static final int REQUEST_FIND_DEVICES = 0;
     private LinearLayout canvas;
     private CanvasView canvasView;
