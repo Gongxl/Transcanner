@@ -29,7 +29,7 @@ import java.util.Date;
 public class ScanResult extends Activity {
     Handler handler;
     String orig;
-
+    Boolean atTrans;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,10 +76,12 @@ public class ScanResult extends Activity {
                         public void run() {
                             super.run();
                             try {
-                                String translated = Translator.translate(editText.getText().toString());
-                                Message message = Message.obtain();
-                                message.obj = translated;
-                                handler.sendMessage(message);
+                                if(!atTrans) {
+                                    String translated = Translator.translate(editText.getText().toString());
+                                    Message message = Message.obtain();
+                                    message.obj = translated;
+                                    handler.sendMessage(message);
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

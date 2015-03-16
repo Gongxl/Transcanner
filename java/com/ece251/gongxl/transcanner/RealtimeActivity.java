@@ -124,6 +124,7 @@ public class RealtimeActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+                System.out.println("receiving translation");
                 boxView.displayText((String)msg.obj);
             }
         };
@@ -181,8 +182,10 @@ public class RealtimeActivity extends Activity {
                                     baseApi.setImage(roi);
                                     final String recognizedText = baseApi.getUTF8Text();
                                     System.out.println(recognizedText);
+                                    System.out.println("threadCount" + threadCount);
                                     if(threadCount < 3) {
                                         threadCount ++;
+                                        System.out.println("creating new thread");
                                         new Thread() {
                                         @Override
                                         public void run() {
@@ -198,7 +201,8 @@ public class RealtimeActivity extends Activity {
                                             }
                                         }
                                     }.start();
-                                    }
+                                    } else
+                                        System.out.println("thread blocked");
                                 }
                             });
                         mode = 1;
