@@ -77,7 +77,8 @@ public class BoxView extends ImageView {
     }
 
     public void displayText(String _str){
-        str = _str;
+        if(_str == null) return;
+        str = new String(_str);
         invalidate();
     }
     public float getLeftPos(){
@@ -102,6 +103,8 @@ public class BoxView extends ImageView {
             canvas.drawRect(left,bottom,right,(float)(bottom/0.25),mAreaPaint);
 
             canvas.drawRect(left, (float)(bottom*1.1), right, (float)(bottom*1.5), dpPaint);
+
             canvas.drawText(str,(float)(left*1.1),(float)(bottom*1.2),mPaint);
+
     }
 }

@@ -5,15 +5,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,8 +23,6 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -40,25 +39,22 @@ public class RealtimeActivity extends Activity {
     public static int screenWidth;
     public static int screenHeight;
     private CameraPreview mPreview;
-    //private TextView textView;
+    private FrameLayout preview;
     public static Bitmap image;
     public static int num = 0;
     public static int mode = 0;
+    private int frameCount = 0;
     public Paint mPaint = new Paint();
     private int bleft, bright, btop, bbottom;
-    private int frameCount;
-    private Handler handler;
-    private BoxView boxView;
     private Button button_back;
-    private int threadCount = 0;
-
-    private FrameLayout preview;
+    private BoxView boxView;
     public static final String DATA_PATH = Environment
             .getExternalStorageDirectory().toString() + "/SimpleAndroidOCR/";
 
     public static final String lang = "eng";
     private static final String TAG = "RealtimeActivity.java";
     public TessBaseAPI baseApi;
+    private Handler handler;
 
     private void initializeOCR() {
         String[] paths = new String[]{DATA_PATH, DATA_PATH + "tessdata/"};
@@ -73,6 +69,7 @@ public class RealtimeActivity extends Activity {
                     Log.v(TAG, "Created directory " + path + " on sdcard");
                 }
             }
+
         }
 
         // lang.traineddata file with the app (in assets folder)
@@ -96,13 +93,14 @@ public class RealtimeActivity extends Activity {
                     out.write(buf, 0, len);
                 }
                 in.close();
-                //gin.close();
                 out.close();
+
                 Log.v(TAG, "Copied " + lang + " traineddata");
             } catch (IOException e) {
                 Log.e(TAG, "Was unable to copy " + lang + " traineddata " + e.toString());
             }
         }
+
     }
 
     @Override
@@ -112,22 +110,17 @@ public class RealtimeActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.realtimeactivity);
-
         screenWidth = getWindowManager().getDefaultDisplay().getWidth();       // 屏幕宽（像素，如：480px）
         screenHeight = getWindowManager().getDefaultDisplay().getHeight();      // 屏幕高（像素，如：800p）
         bleft = (int) (screenWidth * 0.2);
         bright = (int) (screenWidth * 0.8);
         btop = (int) (screenHeight * 0.2);
         bbottom = (int) (screenHeight * 0.25); /////
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                System.out.println("receiving translation");
-                boxView.displayText((String)msg.obj);
-            }
-        };
+
+        setContentView(R.layout.realtimeactivity);
+
+        initializeOCR();
+
         mPaint.setColor(Color.RED);
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.STROKE);
@@ -144,29 +137,32 @@ public class RealtimeActivity extends Activity {
         boxView.setPos(bleft, bright, btop, bbottom);
         preview.addView(mPreview);
 
-        initializeOCR();
-        frameCount = 0;
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                System.out.println("receiving translation");
+                boxView.displayText((String)msg.obj);
+            }
+        };
+
 
         button_back = (Button) findViewById(R.id.button_back);
         button_back.setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mode == 0) {
-                        num = 0;
-                        baseApi = new TessBaseAPI();
-                        baseApi.setDebug(true);
-                        baseApi.init(DATA_PATH, lang);
-                        //mCamera.autoFocus(myAutoFocusCallback);
-                        mCamera.setPreviewCallback(
-                            new Camera.PreviewCallback() {
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mode == 0) {
+                            num = 0;
+                            baseApi = new TessBaseAPI();
+                            baseApi.setDebug(true);
+                            baseApi.init(DATA_PATH, lang);
+                            //mCamera.autoFocus(myAutoFocusCallback);
+                            mCamera.setPreviewCallback(new Camera.PreviewCallback() {
                                 public void onPreviewFrame(byte[] data, Camera camera) {
-                                    if(frameCount ++ != 50) {
-                                        return;
-                                    }
+                                    if(frameCount ++ != 10) return;
                                     frameCount = 0;
-                                    Camera.Parameters parameters;
-                                    parameters = camera.getParameters();
+                                    Camera.Parameters parameters = camera.getParameters();
                                     int width = parameters.getPreviewSize().width;
                                     int height = parameters.getPreviewSize().height;
                                     YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
@@ -179,36 +175,33 @@ public class RealtimeActivity extends Activity {
                                     Bitmap photo = createPhotos(bitmap);
                                     Bitmap roi = Bitmap.createBitmap(photo, (int) (0.2 * height), (int) (0.2 * width), (int) (0.6 * height), (int) (0.05 * width));/////
                                     roi = roi.copy(Bitmap.Config.ARGB_8888, true);
+
                                     baseApi.setImage(roi);
+
                                     final String recognizedText = baseApi.getUTF8Text();
-                                    System.out.println(recognizedText);
-                                    System.out.println("threadCount" + threadCount);
-                                    if(threadCount < 3) {
-                                        threadCount ++;
+                                    System.out.println(frameCount ++);
                                         System.out.println("creating new thread");
                                         new Thread() {
-                                        @Override
-                                        public void run() {
-                                            super.run();
-                                            try {
-                                                String translation = Translator.translate(recognizedText);
-                                                Message message = Message.obtain();
-                                                message.obj = translation;
-                                                handler.sendMessage(message);
-                                                threadCount --;
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
+                                            @Override
+                                            public void run() {
+                                                super.run();
+                                                try {
+                                                    String translation = Translator.translate(recognizedText);
+                                                    Message message = Message.obtain();
+                                                    message.obj = translation;
+                                                    handler.sendMessage(message);
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
-                                        }
-                                    }.start();
-                                    } else
-                                        System.out.println("thread blocked");
+                                        }.start();
                                 }
                             });
-                        mode = 1;
-                        button_back.setText("Back");
-                        return;
+                            mode = 1;
+                            button_back.setText("Back");
+                            return;
                         } else {
+
                             mPreview.getHolder().removeCallback(mPreview);
                             mCamera.stopPreview();
                             mCamera.setPreviewCallback(null);
@@ -217,13 +210,14 @@ public class RealtimeActivity extends Activity {
                             button_back.setText("Start");
                             mode = 0;
                             Intent intent = new Intent();
-                            intent.setClass(RealtimeActivity.this, MainMenu.class);
+                            intent.setClass(RealtimeActivity.this, CameraActivity.class);
                             startActivity(intent);
                             finish();
                         }
                     }
                 }
         );
+
     }
 
     public static Bitmap createPhotos(Bitmap bitmap) {
@@ -257,6 +251,26 @@ public class RealtimeActivity extends Activity {
         mode = 0; /*baseApi.end();*/
     }
 
+    private class TransTask extends AsyncTask<Void, Void, Void> {
+
+        private byte[] mData;
+
+        //构造函数
+        TransTask(byte[] data) {
+            this.mData = data;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+            num++;
+            Log.d("===>", "onPreviewFrame" + num);
+            //textView.setText("onPreviewFrame" + num);
+            return null;
+        }
+
+    }
+
     /**
      * A safe way to get an instance of the Camera object.
      */
@@ -269,5 +283,4 @@ public class RealtimeActivity extends Activity {
         }
         return c; // returns null if camera is unavailable
     }
-
 }

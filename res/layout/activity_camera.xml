@@ -18,6 +18,10 @@
         android:layout_gravity="center_horizontal"
         >
 
+        <TextView
+            android:id="@+id/translate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/button_capture"
             android:text="Take Picture"
