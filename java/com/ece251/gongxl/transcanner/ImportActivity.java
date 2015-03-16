@@ -6,11 +6,13 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,6 +62,7 @@ public class ImportActivity extends ListActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 getFileDir(rootPath);
+                receiveMessage.setText("Waiting for New Files!");
             }
         });
 
@@ -95,16 +98,17 @@ public class ImportActivity extends ListActivity {
             if(file.isDirectory()) {
                 getFileDir(paths.get(position));
             }else {
-                new AlertDialog.Builder(this)
-                        .setTitle("Message")
-                        .setMessage("["+file.getName() + "] is a file")
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                Intent intent = new Intent("android.intent.action.VIEW");
 
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                intent.addCategory("android.intent.category.DEFAULT");
 
-                            }
-                        }).show();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                Uri uri1 = Uri.fromFile(file);
+
+                intent.setDataAndType(uri1, "text/plain");
+
+                startActivity(intent);
 
             }
         }else {
@@ -194,8 +198,6 @@ public class ImportActivity extends ListActivity {
                     String text = (String) msg.obj;
                     System.out.println(text);
                     // construct a string from the valid bytes in the buffer
-                    receiveMessage.setText(connectedDeviceName
-                            + ":  " + text);
                     Toast.makeText(getApplicationContext(),
                             R.string.prompt_receive_message,
                             Toast.LENGTH_SHORT).show();

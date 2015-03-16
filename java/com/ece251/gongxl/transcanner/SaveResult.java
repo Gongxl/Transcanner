@@ -247,8 +247,9 @@ public class SaveResult extends Activity {
                 case BluetoothService.MESSAGE_WRITE:
                     String echo = (String) msg.obj;
                     System.out.println("message signal received" + echo);
+                    if(echo=="EOF\n")
                     Toast.makeText(getApplicationContext(),
-                            "Message " + echo + "sent",
+                            "Finish Sending",
                             Toast.LENGTH_LONG).show();
                     break;
             }

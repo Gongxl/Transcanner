@@ -476,6 +476,7 @@ public class BluetoothService {
                         }
                         fileFlag = false;
                         ScanResult.SavetoFile(stringBuilder.toString(), true);
+                        syncMessage(MESSAGE_READ, stringBuilder.toString());
                         continue;
                     }
                     if(text.startsWith("SOF"))
