@@ -180,7 +180,7 @@ public class RealtimeActivity extends Activity {
                                     baseApi.setImage(roi);
                                     final String recognizedText = baseApi.getUTF8Text();
                                     System.out.println(recognizedText);
-                                    new Thread() {
+                                    /*new Thread() {
                                         @Override
                                         public void run() {
                                             super.run();
@@ -193,7 +193,7 @@ public class RealtimeActivity extends Activity {
                                                 e.printStackTrace();
                                             }
                                         }
-                                    }.start();
+                                    }.start();*/
                                 }
                             });
                         mode = 1;
