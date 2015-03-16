@@ -78,6 +78,7 @@ public class BluetoothService {
             bluetoothService = new BluetoothService();
         bluetoothService.context = context;
         bluetoothService.handler = handler;
+
         return bluetoothService;
     }
 
@@ -230,6 +231,8 @@ public class BluetoothService {
         // Cancel the listening thread
         shutThread(THREAD_LISTENING);
         setState(STATE_IDLE);
+        bluetoothService.context = null;
+        bluetoothService.handler = null;
     }
 
     public void sendFile(String content) {
