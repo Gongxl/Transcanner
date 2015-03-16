@@ -62,10 +62,6 @@
             android:theme="@android:style/Theme.Holo.Dialog">
         </activity>
         <activity
-            android:name=".BluetoothActivity"
-            android:label="BluetoothActivity" >
-        </activity>
-        <activity
             android:name=".RealtimeCanvas"
             android:label="@string/title_activity_realtime_canvas" >
         </activity>
