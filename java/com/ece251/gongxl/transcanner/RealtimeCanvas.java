@@ -1,14 +1,17 @@
 package com.ece251.gongxl.transcanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 public class RealtimeCanvas extends ActionBarActivity {
+    private static final int REQUEST_CANVAS = 1;
     private LinearLayout canvas;
     private CanvasView canvasView;
     private BluetoothService bluetoothService;
@@ -29,7 +32,11 @@ public class RealtimeCanvas extends ActionBarActivity {
                 }
             }
         };
-        bluetoothService = BluetoothActivity.getBluetoothService();
+        bluetoothService = MainMenu.getBluetoothService();
+        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
+        Log.i("Canvas", "Enable bluetooth");
+        bluetoothService.makeDiscoverable();
+        Log.i("Canvas", "Visible");
         bluetoothService.send("canvas view");
         bluetoothService.setCanvasHandler(handler);
         canvas = (LinearLayout) findViewById(R.id.canvasView);
@@ -55,10 +62,22 @@ public class RealtimeCanvas extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent findDeviceIntent = new Intent();
+            findDeviceIntent.setClass(RealtimeCanvas.this,
+                    ListDeviceActivity.class);
+            startActivityForResult(findDeviceIntent, REQUEST_CANVAS);
+
+            Log.i("Bluetooth", "Find device");
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        bluetoothService.stopService();
     }
 }
 

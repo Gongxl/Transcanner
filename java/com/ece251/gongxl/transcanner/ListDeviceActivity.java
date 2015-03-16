@@ -35,13 +35,13 @@ public class ListDeviceActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        bluetoothService = SaveResult.getBluetoothService();
+        bluetoothService = MainMenu.getBluetoothService();
 
-        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
-        Log.i("Bluetooth", "Enable bluetooth");
-
-        bluetoothService.makeDiscoverable();
-        Log.i("Bluetooth", "Visible");
+//        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
+//        Log.i("Bluetooth", "Enable bluetooth");
+//
+//        bluetoothService.makeDiscoverable();
+//        Log.i("Bluetooth", "Visible");
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_list_devices);
