@@ -23,6 +23,7 @@ public class MainMenu extends Activity {
             "SCAN",
             "TRANSLATE",
             "IMPORT",
+            "DRAW",
             "ABOUT US",
 
     } ;
@@ -30,6 +31,7 @@ public class MainMenu extends Activity {
             R.drawable.scan2,
             R.drawable.trans2,
             R.drawable.inbox,
+            R.drawable.draw,
             R.drawable.info2,
 
     };
@@ -66,6 +68,11 @@ public class MainMenu extends Activity {
                         break;
                     }
                     case 3: {
+                        intent = new Intent(MainMenu.this,RealtimeCanvas.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    case 4: {
                         LayoutInflater layoutInflater
                                 = (LayoutInflater) getBaseContext()
                                 .getSystemService(LAYOUT_INFLATER_SERVICE);

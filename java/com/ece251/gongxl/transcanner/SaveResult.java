@@ -197,6 +197,9 @@ public class SaveResult extends Activity {
                                     Toast.LENGTH_SHORT).show();
                             bluetoothService.sendFile(content);
                             Log.i("Bluetooth", "Send successfully");
+                            Toast.makeText(getApplicationContext(),
+                                    "Finished! " + connectedDeviceName,
+                                    Toast.LENGTH_SHORT).show();
 
                             break;
                         case BluetoothService.STATE_CONNECTING:
@@ -240,9 +243,10 @@ public class SaveResult extends Activity {
                 case BluetoothService.MESSAGE_WRITE:
                     String echo = (String) msg.obj;
                     System.out.println("message signal received" + echo);
-//                    Toast.makeText(getApplicationContext(),
-//                            "Message " + echo + "sent",
-//                            Toast.LENGTH_LONG).show();
+                    if(echo == "EOF")
+                    Toast.makeText(getApplicationContext(),
+                            "Finish sending!",
+                            Toast.LENGTH_LONG).show();
                     break;
             }
         }
