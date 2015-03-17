@@ -31,7 +31,7 @@
             android:layout_weight="1.0"
             android:src="@drawable/brush_green"
             android:background="@android:color/transparent"/>
-        <ImageButton android:id="@+id/brush_yellow"
+        <ImageButton android:id="@+id/brush_black"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"

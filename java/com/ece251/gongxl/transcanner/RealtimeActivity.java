@@ -48,6 +48,7 @@ public class RealtimeActivity extends Activity {
     private int bleft, bright, btop, bbottom;
     private Button button_back;
     private BoxView boxView;
+    private Translator translator;
     public static final String DATA_PATH = Environment
             .getExternalStorageDirectory().toString() + "/SimpleAndroidOCR/";
 
@@ -120,7 +121,6 @@ public class RealtimeActivity extends Activity {
         setContentView(R.layout.realtimeactivity);
 
         initializeOCR();
-
         mPaint.setColor(Color.RED);
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.STROKE);
@@ -141,11 +141,20 @@ public class RealtimeActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                System.out.println("receiving translation");
-                boxView.displayText((String)msg.obj);
+                if(msg.arg1 == Translator.MESSAGE_AUTOCORRECT) {
+                    //editText.setText((String) msg.obj);
+                    System.out.println("received autocorrect msg" + (String) msg.obj);
+                }
+                else if(msg.arg1 == Translator.MESSAGE_TRANSLATE){
+                    boxView.displayText((String) msg.obj);
+                    System.out.println("received translate msg");
+                } else {
+                    boxView.displayText((String) msg.obj);
+                    System.out.println("received lookup msg");
+                }
             }
         };
-
+        translator = new Translator(getApplicationContext(), handler);
 
         button_back = (Button) findViewById(R.id.button_back);
         button_back.setOnClickListener(
@@ -177,31 +186,16 @@ public class RealtimeActivity extends Activity {
                                     roi = roi.copy(Bitmap.Config.ARGB_8888, true);
 
                                     baseApi.setImage(roi);
-
-                                    final String recognizedText = baseApi.getUTF8Text();
+                                    String recognizedText = baseApi.getUTF8Text();
                                     System.out.println(frameCount ++);
-                                        System.out.println("creating new thread");
-                                        new Thread() {
-                                            @Override
-                                            public void run() {
-                                                super.run();
-                                                try {
-                                                    String translation = Translator.translate(recognizedText);
-                                                    Message message = Message.obtain();
-                                                    message.obj = translation;
-                                                    handler.sendMessage(message);
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }.start();
+                                    System.out.println("creating new thread");
+                                    translator.translate(recognizedText, true);
                                 }
                             });
                             mode = 1;
                             button_back.setText("Back");
                             return;
                         } else {
-
                             mPreview.getHolder().removeCallback(mPreview);
                             mCamera.stopPreview();
                             mCamera.setPreviewCallback(null);

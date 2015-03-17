@@ -52,8 +52,6 @@ public class CameraActivity extends Activity {
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
 
-
-
         final Button captureButton = (Button) findViewById(R.id.button_capture);
         captureButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -62,9 +60,6 @@ public class CameraActivity extends Activity {
                         // get an image from the camera
                         if(mode == 0){
                             PictureCallback mPicture = new PictureCallback() {
-
-
-
                                 @Override
                                 public void onPictureTaken(byte[] data, Camera camera) {
 
@@ -107,8 +102,6 @@ public class CameraActivity extends Activity {
                             };
                             mCamera.autoFocus(myAutoFocusCallback);
                             mCamera.takePicture(null, null, mPicture);
-
-
                         }
 
                     }

@@ -2,6 +2,7 @@ package com.ece251.gongxl.transcanner;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +10,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -19,6 +22,14 @@ public class RealtimeCanvas extends ActionBarActivity {
     private BluetoothService bluetoothService;
     private Handler handler;
     private String connectedDeviceName;
+    private ImageButton brushBlue;
+    private ImageButton brushRed;
+    private ImageButton brushGreen;
+    private ImageButton brushBlack;
+    private ImageButton strokeSmall;
+    private ImageButton strokeMedium;
+    private ImageButton strokeLarge;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +105,57 @@ public class RealtimeCanvas extends ActionBarActivity {
         };
         bluetoothService = BluetoothService.getBluetoothService(getApplicationContext(),handler);
         bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
+
+        brushBlack = (ImageButton) findViewById(R.id.brush_black);
+        brushBlue = (ImageButton) findViewById(R.id.brush_blue);
+        brushGreen = (ImageButton) findViewById(R.id.brush_green);
+        brushRed = (ImageButton) findViewById(R.id.brush_red);
+        strokeSmall = (ImageButton) findViewById(R.id.brush_small);
+        strokeMedium = (ImageButton) findViewById(R.id.brush_middle);
+        strokeLarge = (ImageButton) findViewById(R.id.brush_large);
+
+        brushBlack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvasView.setPaintColor(Color.BLACK);
+            }
+        });
+        brushGreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvasView.setPaintColor(Color.GREEN);
+            }
+        });
+        brushBlue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvasView.setPaintColor(Color.BLUE);
+            }
+        });
+        brushRed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvasView.setPaintColor(Color.RED);
+            }
+        });
+        strokeSmall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvasView.setPaintStroke(CanvasView.PAINT_STROKE_SMALL);
+            }
+        });
+        strokeMedium.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvasView.setPaintStroke(CanvasView.PAINT_STROKE_MEDIUM);
+            }
+        });
+        strokeLarge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvasView.setPaintStroke(CanvasView.PAINT_STROKE_BIG);
+            }
+        });
         Log.i("Canvas", "Enable bluetooth");
         bluetoothService.makeDiscoverable();
         Log.i("Canvas", "Visible");
