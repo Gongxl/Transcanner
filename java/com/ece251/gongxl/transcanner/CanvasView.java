@@ -162,7 +162,7 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void syncDrawing(Drawing drawing) {
         System.out.println(drawing.toString());
-        bluetoothService.send(drawing.toString() + "ENDDRAWING");
+        bluetoothService.send(drawing.toString() + ":ENDDRAWING");
         this.curve = null;
     }
 
@@ -213,7 +213,7 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void addDrawing(String drawingMessage) {
         String[] drawingInfo = drawingMessage.split(":");
-        String[] coordinates = drawingInfo[3].split(" ");
+        String[] coordinates = drawingInfo[3].trim().split(" ");
         float width = Float.valueOf(drawingInfo[1]);
         int color = Integer.valueOf(drawingInfo[2]);
         int count = 0;
