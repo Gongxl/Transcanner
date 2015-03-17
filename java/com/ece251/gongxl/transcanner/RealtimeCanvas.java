@@ -1,11 +1,18 @@
 package com.ece251.gongxl.transcanner;
 
 import android.app.Activity;
+import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -30,6 +37,10 @@ public class RealtimeCanvas extends ActionBarActivity {
     private ImageButton strokeMedium;
     private ImageButton strokeLarge;
 
+    private ShakeEventListener shakeEventListener;
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private Vibrator vibrator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +174,13 @@ public class RealtimeCanvas extends ActionBarActivity {
         canvas = (LinearLayout) findViewById(R.id.canvasView);
         canvasView = new CanvasView(getApplicationContext(), bluetoothService);
         canvas.addView(canvasView);
+
+        shakeEventListener = new ShakeEventListener();
+
+        sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        vibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
+
     }
 
 
@@ -250,6 +268,36 @@ public class RealtimeCanvas extends ActionBarActivity {
 //                    R.string.prompt_turn_on,
 //                    Toast.LENGTH_LONG).show();
 //        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(shakeEventListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(shakeEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    class ShakeEventListener implements SensorEventListener {
+        static final int SHAKE_THRESHOLD = 10;
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            if(sensorEvent.values[0] > SHAKE_THRESHOLD
+                    || sensorEvent.values[1] > SHAKE_THRESHOLD
+                    || sensorEvent.values[2] > SHAKE_THRESHOLD) {
+                canvasView.clearCanvas();
+                vibrator.vibrate(100);
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+
+        }
     }
 }
 

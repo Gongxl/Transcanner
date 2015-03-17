@@ -211,6 +211,12 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    public void clearCanvas() {
+        synchronized (drawList) {
+            drawList.clear();
+        }
+    }
+
     public void addDrawing(String drawingMessage) {
         String[] drawingInfo = drawingMessage.split(":");
         for(String part : drawingInfo)
