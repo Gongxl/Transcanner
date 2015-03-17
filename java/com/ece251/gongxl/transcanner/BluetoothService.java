@@ -9,13 +9,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -88,6 +81,10 @@ public class BluetoothService {
         return bluetoothService;
     }
 
+    public void reset(Context context, Handler handler) {
+        bluetoothService.handler = handler;
+        bluetoothService.context = context;
+    }
 
     public synchronized void startListening() {
         // Cancel any thread attempting to make a connection
@@ -195,11 +192,15 @@ public class BluetoothService {
     }
 
     private void syncMessage(int messageType, String text) {
-        if(handler == null) return;
         Message message = Message.obtain();
         message.arg1 = messageType;
         message.obj = text;
-        this.handler.sendMessage(message);
+        synchronized (this) {
+            System.out.println("sending message to canvas1");
+            if(handler == null) return;
+            System.out.println("sending message to canvas2");
+            this.handler.sendMessage(message);
+        }
     }
 
     private synchronized void shutThread(int threadType) {
@@ -542,6 +543,7 @@ public class BluetoothService {
                             System.out.println("drawing receiving loop" + text);
                         }
                         sb.append(text);
+                        System.out.println("outof loop");
                         syncMessage(MESSAGE_DRAWING, sb.toString());
                     }
                     /*else if (text.startsWith("SOI")) {

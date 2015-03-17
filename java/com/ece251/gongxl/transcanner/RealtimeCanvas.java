@@ -49,7 +49,6 @@ public class RealtimeCanvas extends ActionBarActivity {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-
                 switch (msg.arg1) {
                     case BluetoothService.MESSAGE_DRAWING:
                         System.out.println("draw message received");
@@ -114,8 +113,6 @@ public class RealtimeCanvas extends ActionBarActivity {
                 }
             }
         };
-        bluetoothService = BluetoothService.getBluetoothService(getApplicationContext(),handler);
-        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
 
         brushBlack = (ImageButton) findViewById(R.id.brush_black);
         brushBlue = (ImageButton) findViewById(R.id.brush_blue);
@@ -167,10 +164,12 @@ public class RealtimeCanvas extends ActionBarActivity {
                 canvasView.setPaintStroke(CanvasView.PAINT_STROKE_BIG);
             }
         });
+
+        bluetoothService = BluetoothService.getBluetoothService(getApplicationContext(),handler);
+        bluetoothService.switchBluetooth(BluetoothService.SWITCH_ON);
         Log.i("Canvas", "Enable bluetooth");
         bluetoothService.makeDiscoverable();
         Log.i("Canvas", "Visible");
-        bluetoothService.send("canvas view");
         canvas = (LinearLayout) findViewById(R.id.canvasView);
         canvasView = new CanvasView(getApplicationContext(), bluetoothService);
         canvas.addView(canvasView);
@@ -279,6 +278,7 @@ public class RealtimeCanvas extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        bluetoothService.reset(getApplicationContext(), handler);
         sensorManager.registerListener(shakeEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
