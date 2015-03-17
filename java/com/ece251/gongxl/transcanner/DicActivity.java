@@ -7,44 +7,71 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 
 public class DicActivity extends ActionBarActivity {
     private Handler trans_handler;
     private Translator translator;
-
-
+    EditText editText;
+    TextView textView;
+    Boolean autoC = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dic);
 
-//        EditText editText = (EditText)findViewById(R.id.input_word);
-//        ImageButton
+        editText = (EditText)findViewById(R.id.input_word);
+        ImageButton btn = (ImageButton)findViewById(R.id.btn_dic);
+        final CheckBox auto_correct = (CheckBox)findViewById(R.id.auto_correct);
+        textView = (TextView)findViewById(R.id.dic_result);
 
-//        trans_handler = new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//                if(msg.arg1 == Translator.MESSAGE_AUTOCORRECT) {
-//                    //editText.setText((String) msg.obj);
-//                    System.out.println("received autocorrect msg" + (String) msg.obj);
-//                    editText.setText((String)msg.obj);
-//                }
-//                else if(msg.arg1 == Translator.MESSAGE_TRANSLATE){
-//
-//                    System.out.println("received translate msg");
-//                    editText.setText((String) msg.obj);
-//                } else {
-//
-//                    System.out.println("received lookup msg");
-//
-//                }
-//            }
-//        };
-//        translator = new Translator(getApplicationContext(), trans_handler);
+        auto_correct.setOnClickListener(new CheckBox.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if(auto_correct.isChecked()){
+                    autoC = true;
+
+
+                }
+                else autoC = false;
+            }
+        });
+
+        btn.setOnClickListener(new ImageButton.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                translator.lookupDictionary(editText.getText().toString(),autoC);
+            }
+        });
+
+        trans_handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if(msg.arg1 == Translator.MESSAGE_AUTOCORRECT) {
+                    //editText.setText((String) msg.obj);
+                    System.out.println("received autocorrect msg" + (String) msg.obj);
+                    editText.setText((String)msg.obj);
+                }
+                else if(msg.arg1 == Translator.MESSAGE_TRANSLATE){
+
+                    System.out.println("received translate msg");
+
+                } else {
+
+                    System.out.println("received lookup msg");
+                    textView.setText((String) msg.obj);
+
+                }
+            }
+        };
+        translator = new Translator(getApplicationContext(), trans_handler);
     }
 
 

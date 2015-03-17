@@ -10,14 +10,14 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="32dp">
         <EditText android:id="@+id/input_word"
-            android:layout_width="200dp"
+            android:layout_width="350dp"
             android:layout_height="match_parent"
+            android:layout_weight="2.0"
             android:gravity="center_vertical"
-            android:layout_marginTop="32dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+
             android:textSize="20sp"/>
 
         <ImageButton android:id="@+id/btn_dic"
@@ -25,11 +25,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1.0"
             android:scaleType="centerInside"
-            android:src="@drawable/dictionary"
+            android:src="@drawable/search"
             android:background="@android:color/transparent"
             android:layout_gravity="center_horizontal"
             android:gravity="center"/>
         </LinearLayout>
+
     <CheckBox android:id="@+id/auto_correct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

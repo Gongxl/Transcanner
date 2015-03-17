@@ -109,7 +109,7 @@ public class ScanResult extends Activity {
 
                     translator.autoCorrect(editText.getText().toString());
                 }
-                else if(orig!=null)editText.setText(orig);
+                else editText.setText(orig);
             }
         });
 
