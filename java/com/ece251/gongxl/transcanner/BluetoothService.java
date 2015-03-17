@@ -539,7 +539,9 @@ public class BluetoothService {
                             bytes = inputStream.read(buffer);
                             text = new String(Arrays.copyOf(buffer, bytes),
                                         "UTF-8");
+                            System.out.println("drawing receiving loop" + text);
                         }
+                        sb.append(text);
                         syncMessage(MESSAGE_DRAWING, sb.toString());
                     }
                     /*else if (text.startsWith("SOI")) {

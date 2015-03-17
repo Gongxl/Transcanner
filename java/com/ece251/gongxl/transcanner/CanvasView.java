@@ -213,6 +213,8 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void addDrawing(String drawingMessage) {
         String[] drawingInfo = drawingMessage.split(":");
+        for(String part : drawingInfo)
+            System.out.println("addDrawing" + part);
         String[] coordinates = drawingInfo[3].trim().split(" ");
         float width = Float.valueOf(drawingInfo[1]);
         int color = Integer.valueOf(drawingInfo[2]);
