@@ -118,7 +118,7 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        canvasViewReady = false;
+            canvasViewReady = false;
     }
 
     public void startLine(float x, float y) {
@@ -173,37 +173,39 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
                 if (!surfaceHolder.getSurface().isValid())
                     return;
                 if (!canvasViewReady) {
-
                     return;
                 }
-
-                canvas = surfaceHolder.lockCanvas();
-                canvas.drawColor(Color.WHITE);
-                if(curve != null) {
-                    synchronized (curve) {
-                        if(curve == null) continue;
-                        Paint paint = new Paint();
-                        paint.setStyle(Paint.Style.STROKE);
-                        paint.setColor(paintColor);
-                        paint.setStrokeWidth(paintWidth);
-                        if(canvas == null) {
-                            System.out.println("null canvas");
-                            surfaceHolder.unlockCanvasAndPost(canvas);
-                            continue;
+                try {
+                    canvas = surfaceHolder.lockCanvas();
+                    if(canvas != null)
+                        canvas.drawColor(Color.WHITE);
+                    if(curve != null) {
+                        synchronized (curve) {
+                            if(curve == null) continue;
+                            Paint paint = new Paint();
+                            paint.setStyle(Paint.Style.STROKE);
+                            paint.setColor(paintColor);
+                            paint.setStrokeWidth(paintWidth);
+                            if(canvas != null)
+                                canvas.drawPath(curve, paint);
                         }
-                        canvas.drawPath(curve, paint);
+                    }
+                    synchronized (drawList) {
+                        for (Drawing drawing : drawList) {
+                            Paint paint = new Paint();
+                            paint.setStyle(Paint.Style.STROKE);
+                            paint.setColor(drawing.color);
+                            paint.setStrokeWidth(drawing.width);
+                            canvas.drawPath(drawing, paint);
+                        }
+                    }
+                } catch (Exception ex) {
+                    System.out.println("");
+                } finally {
+                    if (canvas != null) {
+                        surfaceHolder.unlockCanvasAndPost(canvas);
                     }
                 }
-                synchronized (drawList) {
-                    for (Drawing drawing : drawList) {
-                        Paint paint = new Paint();
-                        paint.setStyle(Paint.Style.STROKE);
-                        paint.setColor(drawing.color);
-                        paint.setStrokeWidth(drawing.width);
-                        canvas.drawPath(drawing, paint);
-                    }
-                }
-                surfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
     }

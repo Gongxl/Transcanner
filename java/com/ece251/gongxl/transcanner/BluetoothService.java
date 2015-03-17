@@ -229,10 +229,6 @@ public class BluetoothService {
      * Stop all threads
      */
     public synchronized void stopService() {
-        Toast.makeText(context,
-                R.string.prompt_disconnect,
-                Toast.LENGTH_LONG).show();
-
         // Cancel the thread that completed the connection
         shutThread(THREAD_COMMUNICATION);
         // Cancel any thread currently running a connection
