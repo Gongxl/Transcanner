@@ -253,13 +253,13 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
         private final List<Point> track;
 
         @Override
-        public void moveTo(float x, float y) {
+        synchronized public void moveTo(float x, float y) {
             super.moveTo(x, y);
             track.add(new Point(x, y));
         }
 
         @Override
-        public void lineTo(float x, float y) {
+        synchronized public void lineTo(float x, float y) {
             super.lineTo(x, y);
             track.add(new Point(x, y));
 
