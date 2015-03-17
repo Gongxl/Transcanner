@@ -3,7 +3,7 @@
 
     <string name="app_name">Transcanner</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Find Device</string>
+    <string name="action_settings">settings</string>
     <string name="title_activity_welcome">Welcome</string>
     <string name="title_activity_camera">Camera</string>
     <string name="title_activity_translation">Translation</string>
@@ -49,6 +49,8 @@
     <string name="title_activity_list_devices">ListDevices</string>
     <string name="title_activity_import">ImportActivity</string>
     <string name="title_activity_save_result">SaveResult</string>
-    <string name="title_activity_realtime_canvas">RealtimeCanvas</string>
+    <string name="title_activity_realtime_canvas">Share Canvas</string>
+    <string name="title_activity_trans_mode">TransMode</string>
+    <string name="title_activity_dic">Dictionary</string>
 
 </resources>

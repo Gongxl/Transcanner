@@ -23,7 +23,14 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
+
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.ActionBarActivity;
+
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -33,7 +40,7 @@ import android.widget.FrameLayout;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 
-public class RealtimeActivity extends Activity {
+public class RealtimeActivity extends ActionBarActivity {
 
     private Camera mCamera;
     public static int screenWidth;
@@ -108,7 +115,7 @@ public class RealtimeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         screenWidth = getWindowManager().getDefaultDisplay().getWidth();       // 屏幕宽（像素，如：480px）
@@ -277,4 +284,36 @@ public class RealtimeActivity extends Activity {
         }
         return c; // returns null if camera is unavailable
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_realtime_trans, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.jump_dic) {
+            Intent intent = new Intent(RealtimeActivity.this,DicActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        if (id == R.id.back_home) {
+            Intent intent = new Intent(RealtimeActivity.this,MainMenu.class);
+            startActivity(intent);
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
+

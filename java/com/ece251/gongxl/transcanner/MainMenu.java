@@ -33,7 +33,7 @@ public class MainMenu extends Activity {
     Integer[] imageId = {
             R.drawable.scan2,
             R.drawable.trans2,
-            R.drawable.inbox,
+            R.drawable.download,
             R.drawable.draw,
             R.drawable.info2,
 
@@ -61,7 +61,7 @@ public class MainMenu extends Activity {
                         break;
                     }
                     case 1: {
-                        intent = new Intent(MainMenu.this, RealtimeActivity.class);
+                        intent = new Intent(MainMenu.this, TransMode.class);
                         startActivity(intent);
                         break;
                     }
