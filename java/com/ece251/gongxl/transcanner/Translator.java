@@ -63,7 +63,7 @@ public class Translator {
         if(word == null || word.equals("")) return;
         if(word.contains(" "))
             word = word.split(" ")[0];
-        new LookupThread(word, autoCorrection).start();
+        new LookupThread(word.toLowerCase(), autoCorrection).start();
     }
 
     private class LookupThread extends Thread {
@@ -127,7 +127,7 @@ public class Translator {
 
     public void translate(String toTranslate, boolean autoCorrection) {
         if(toTranslate == null || toTranslate.equals("")) return;
-        new TranslationThread(toTranslate, autoCorrection).start();
+        new TranslationThread(toTranslate.toLowerCase(), autoCorrection).start();
     }
 
     private class TranslationThread extends Thread {

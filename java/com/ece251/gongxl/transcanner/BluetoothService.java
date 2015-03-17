@@ -512,17 +512,13 @@ public class BluetoothService {
                             "UTF-8");
                     System.out.println("received message" + text);
                     if (fileFlag) {
-                        System.out.println("file flag on");
                         StringBuilder stringBuilder = new StringBuilder();
                         while (!text.startsWith("EOF")) {
                             stringBuilder.append(text);
                             bytes = inputStream.read(buffer);
                             text = new String(Arrays.copyOf(buffer, bytes),
                                     "UTF-8");
-                            System.out.println("in while loop: " + text);
                         }
-                        if(text.startsWith("EOF"))
-                            System.out.println("out of loop");
                         fileFlag = false;
                         ScanResult.SavetoFile(stringBuilder.toString(), true);
                         syncMessage(MESSAGE_READ, stringBuilder.toString());
@@ -536,8 +532,16 @@ public class BluetoothService {
                     }*/
                     if (text.startsWith("SOF"))
                         fileFlag = true;
-                    else if (text.startsWith("DRAWING"))
-                        syncMessage(MESSAGE_DRAWING, text);
+                    else if (text.startsWith("DRAWING")) {
+                        StringBuilder sb = new StringBuilder();
+                        while (!text.endsWith("ENDDRAWING")) {
+                            sb.append(text);
+                            bytes = inputStream.read(buffer);
+                            text = new String(Arrays.copyOf(buffer, bytes),
+                                        "UTF-8");
+                        }
+                        syncMessage(MESSAGE_DRAWING, sb.toString());
+                    }
                     /*else if (text.startsWith("SOI")) {
                         imageFlag = true;
                         imageOut = new FileOutputStream(
