@@ -283,7 +283,7 @@ public class RealtimeCanvas extends ActionBarActivity {
     }
 
     class ShakeEventListener implements SensorEventListener {
-        static final int SHAKE_THRESHOLD = 10;
+        static final int SHAKE_THRESHOLD = 15;
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             if(sensorEvent.values[0] > SHAKE_THRESHOLD
