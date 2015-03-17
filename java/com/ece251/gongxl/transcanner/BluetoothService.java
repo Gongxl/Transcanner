@@ -10,6 +10,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -57,6 +63,7 @@ public class BluetoothService {
     public static final int MESSAGE_READ = 4;
     public static final int MESSAGE_WRITE = 5;
     public static final int MESSAGE_DRAWING = 6;
+    public static final int MESSAGE_IMAGE = 7;
 
     public static final int THREAD_LISTENING = 0;
     public static final int THREAD_CONNECTING = 1;
@@ -237,6 +244,32 @@ public class BluetoothService {
         bluetoothService.handler = null;
     }
 
+    public void sendImage(String path) {
+        File image = new File(path);
+        byte[] buffer = new byte[1024];
+        if(!image.exists() || !image.isFile())
+            return;
+        BufferedInputStream in = null;
+        try {
+            in = new BufferedInputStream(
+                    new FileInputStream(image));
+            send("SOI");
+            while(in.read(buffer) != -1)
+                send(buffer);
+            send("EOI");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void sendFile(String content) {
 //        StringBuilder sb = new StringBuilder();
 //        sb.append("a\n");
@@ -266,6 +299,21 @@ public class BluetoothService {
         }
         // Perform the write unsynchronized
         threadCopy.write(out);
+    }
+
+    public void send(byte[] toSent) {
+        // Create temporary object
+        CommunicationThread threadCopy;
+        // Synchronize a copy of the ConnectedThread
+        synchronized (this) {
+            if (serviceState != STATE_COMMUNICATING) {
+                System.out.println("Currently no communication channel");
+                return;
+            }
+            threadCopy = communicationThread;
+        }
+        // Perform the write unsynchronized
+        threadCopy.write(toSent);
     }
 
 
@@ -456,7 +504,8 @@ public class BluetoothService {
             byte[] buffer = new byte[1024];
             int bytes;
             boolean fileFlag = false;
-
+            boolean imageFlag = false;
+            FileOutputStream imageOut = null;
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
@@ -479,10 +528,21 @@ public class BluetoothService {
                         syncMessage(MESSAGE_READ, stringBuilder.toString());
                         continue;
                     }
+                    if(imageFlag) {
+                        while((bytes = inputStream.read(buffer)) != -1)
+                            imageOut.write(buffer, 0, bytes);
+                        imageFlag = false;
+                        syncMessage(MESSAGE_IMAGE, null);
+                    }
                     if(text.startsWith("SOF"))
                         fileFlag = true;
                     else if(text.startsWith("DRAWING"))
                         syncMessage(MESSAGE_DRAWING, text);
+                    else if(text.startsWith("SOI")) {
+                        imageFlag = true;
+                        imageOut = new FileOutputStream(
+                                new File("/mnt/sdcard/recv_image.jpg"));
+                    }
                     // Send the obtained bytes to the UI Activity
                     //syncMessage(MESSAGE_READ, text);
                 } catch (IOException e) {
@@ -491,6 +551,14 @@ public class BluetoothService {
                     // restart listening mode
                     startListening();
                     break;
+                } finally {
+                    try {
+                        inputStream.close();
+                        if(imageOut != null)
+                            imageOut.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

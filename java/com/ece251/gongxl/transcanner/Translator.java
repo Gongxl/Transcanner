@@ -87,7 +87,8 @@ public class Translator {
                     System.out.println("nothing there");
                     return;
                 }
-            }
+            } else corrected = this.word;
+
             String url = DICTIONARY_URL + "?client_id=" + API_KEY
                     + "&from=" + AUTO + "&to=" + AUTO + "&q=" + URLEncoder.encode(corrected);
             HttpGet getRequest = new HttpGet(url);
@@ -149,7 +150,7 @@ public class Translator {
                     System.out.println("nothing there");
                     return;
                 }
-            }
+            } else corrected = this.toTranslate;
             String url = TRANSLATE_URL + "?client_id=" + API_KEY
                     + "&from=" + AUTO + "&to=" + AUTO + "&q=" + URLEncoder.encode(corrected);
             HttpGet getRequest = new HttpGet(url);
