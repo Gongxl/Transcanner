@@ -1,6 +1,8 @@
 package com.ece251.gongxl.transcanner;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,11 +10,37 @@ import android.view.MenuItem;
 
 
 public class DicActivity extends ActionBarActivity {
+    private Handler trans_handler;
+    private Translator translator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dic);
+
+
+//        trans_handler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if(msg.arg1 == Translator.MESSAGE_AUTOCORRECT) {
+//                    //editText.setText((String) msg.obj);
+//                    System.out.println("received autocorrect msg" + (String) msg.obj);
+//                    editText.setText((String)msg.obj);
+//                }
+//                else if(msg.arg1 == Translator.MESSAGE_TRANSLATE){
+//
+//                    System.out.println("received translate msg");
+//                    editText.setText((String) msg.obj);
+//                } else {
+//
+//                    System.out.println("received lookup msg");
+//
+//                }
+//            }
+//        };
+//        translator = new Translator(getApplicationContext(), trans_handler);
     }
 
 
