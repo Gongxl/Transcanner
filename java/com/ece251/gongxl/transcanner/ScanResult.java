@@ -106,6 +106,7 @@ public class ScanResult extends Activity {
             public void onClick(View v){
                 if(checkBox.isChecked()){
 //                    autoC = true;
+
                     translator.autoCorrect(editText.getText().toString());
                 }
                 else if(orig!=null)editText.setText(orig);

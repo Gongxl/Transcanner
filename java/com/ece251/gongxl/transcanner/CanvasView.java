@@ -172,15 +172,25 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
             while (canvasViewReady) {
                 if (!surfaceHolder.getSurface().isValid())
                     return;
+                if (!canvasViewReady) {
+
+                    return;
+                }
+
                 canvas = surfaceHolder.lockCanvas();
-                if (!canvasViewReady) return;
                 canvas.drawColor(Color.WHITE);
                 if(curve != null) {
                     synchronized (curve) {
+                        if(curve == null) continue;
                         Paint paint = new Paint();
                         paint.setStyle(Paint.Style.STROKE);
                         paint.setColor(paintColor);
                         paint.setStrokeWidth(paintWidth);
+                        if(canvas == null) {
+                            System.out.println("null canvas");
+                            surfaceHolder.unlockCanvasAndPost(canvas);
+                            continue;
+                        }
                         canvas.drawPath(curve, paint);
                     }
                 }

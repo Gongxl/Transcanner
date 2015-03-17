@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 
 public class DicActivity extends ActionBarActivity {
@@ -19,6 +21,8 @@ public class DicActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dic);
 
+//        EditText editText = (EditText)findViewById(R.id.input_word);
+//        ImageButton
 
 //        trans_handler = new Handler() {
 //            @Override
