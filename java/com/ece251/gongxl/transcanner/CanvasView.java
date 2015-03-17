@@ -29,8 +29,8 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
     private Handler handler;
 
     public final static int PAINT_STROKE_SMALL = 1;
-    public final static int PAINT_STROKE_MEDIUM = 2;
-    public final static int PAINT_STROKE_BIG = 3;
+    public final static int PAINT_STROKE_MEDIUM = 3;
+    public final static int PAINT_STROKE_BIG = 5;
 
     public final static int DRAW_TYPE_LINE = 0;
     public final static int DRAW_TYPE_CURVE = 1;
@@ -219,6 +219,7 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
         Drawing drawing = new Drawing(width, color);
         for(String coordinate : coordinates) {
             String[] cord = coordinate.split(",");
+            if(cord.length < 2) continue;
             float x = Float.valueOf(cord[0]);
             float y = Float.valueOf(cord[1]);
             if(count == 0)

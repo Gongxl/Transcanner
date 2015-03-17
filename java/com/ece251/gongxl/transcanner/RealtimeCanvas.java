@@ -96,9 +96,9 @@ public class RealtimeCanvas extends ActionBarActivity {
                     case BluetoothService.MESSAGE_WRITE:
                         String echo = (String) msg.obj;
                         System.out.println("message signal received" + echo);
-                        Toast.makeText(getApplicationContext(),
+                        /*Toast.makeText(getApplicationContext(),
                                 "Message " + echo + "sent",
-                                Toast.LENGTH_LONG).show();
+                                Toast.LENGTH_LONG).show();*/
                         break;
                 }
             }
