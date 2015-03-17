@@ -38,7 +38,6 @@ public class Translator {
     public static final int MESSAGE_LOOKUP = 11;
     public static final int MESSAGE_AUTOCORRECT = 13;
 
-
     public Translator(Context context, Handler handler) {
         this.handler = handler;
         this.textServicesManager = (TextServicesManager) context
@@ -48,6 +47,16 @@ public class Translator {
         this.spellCheckerSession = textServicesManager
                 .newSpellCheckerSession(null,null,
                         spellCheckCallback, true);
+    }
+
+    public void autoCorrect(final String word) {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                spellCorrect(word);
+            }
+        }.start();
     }
 
     public void lookupDictionary(String word, boolean autoCorrection) {
@@ -78,10 +87,6 @@ public class Translator {
                     System.out.println("nothing there");
                     return;
                 }
-                Message message = Message.obtain();
-                message.arg1 = MESSAGE_AUTOCORRECT;
-                message.obj = corrected;
-                handler.sendMessage(message);
             }
             String url = DICTIONARY_URL + "?client_id=" + API_KEY
                     + "&from=" + AUTO + "&to=" + AUTO + "&q=" + URLEncoder.encode(corrected);
@@ -144,10 +149,6 @@ public class Translator {
                     System.out.println("nothing there");
                     return;
                 }
-                Message message = Message.obtain();
-                message.arg1 = MESSAGE_AUTOCORRECT;
-                message.obj = corrected;
-                handler.sendMessage(message);
             }
             String url = TRANSLATE_URL + "?client_id=" + API_KEY
                     + "&from=" + AUTO + "&to=" + AUTO + "&q=" + URLEncoder.encode(corrected);
@@ -198,6 +199,10 @@ public class Translator {
                 if (correctedSentence != null) break;
             }
         }
+        Message message = Message.obtain();
+        message.arg1 = MESSAGE_AUTOCORRECT;
+        message.obj = correctedSentence;
+        handler.sendMessage(message);
         return correctedSentence;
     }
 
