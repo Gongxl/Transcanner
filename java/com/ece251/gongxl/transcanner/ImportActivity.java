@@ -196,7 +196,7 @@ public class ImportActivity extends ListActivity {
                     break;
                 case BluetoothService.MESSAGE_READ:
                     String text = (String) msg.obj;
-                    System.out.println(text);
+                    System.out.println("import activity " + text);
                     // construct a string from the valid bytes in the buffer
                     Toast.makeText(getApplicationContext(),
                             R.string.prompt_receive_message,

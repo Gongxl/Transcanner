@@ -140,6 +140,7 @@ public class ScanResult extends Activity {
 
 
     protected static File SavetoFile(String content, Boolean rec){
+        System.out.println("save to file");
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             File sdCardDir = Environment.getExternalStorageDirectory();
             File StorageDir = new File(sdCardDir,"TS");
