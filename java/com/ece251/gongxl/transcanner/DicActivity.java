@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,7 @@ public class DicActivity extends ActionBarActivity {
         ImageButton btn = (ImageButton)findViewById(R.id.btn_dic);
         final CheckBox auto_correct = (CheckBox)findViewById(R.id.auto_correct);
         textView = (TextView)findViewById(R.id.dic_result);
+        textView.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         auto_correct.setOnClickListener(new CheckBox.OnClickListener(){
             @Override
