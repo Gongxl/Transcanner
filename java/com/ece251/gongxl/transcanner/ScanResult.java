@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ public class ScanResult extends Activity {
     Boolean atTrans = false;
     private Handler trans_handler;
     private Translator translator;
+//    private Boolean autoC = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,26 +59,11 @@ public class ScanResult extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            super.run();
-                            try {
-                                if(!atTrans) {
-                                    orig = editText.getText().toString();
-                                    String translated = translator.lookupDictionary(editText.getText().toString());
-                                    Message message = Message.obtain();
-                                    message.obj = translated;
-                                    handler.sendMessage(message);
-                                    atTrans = true;
-                                }
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }.start();
+                if(!atTrans) {
+                   orig = editText.getText().toString();
+                   translator.translate(editText.getText().toString(),false);
+                   atTrans = true;
+                }
             }
         });
 
@@ -87,7 +74,7 @@ public class ScanResult extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                EditText editText = (EditText)findViewById(R.id.scan_result);
+
                 Log.i("editText",editText.getText().toString());
                 String filepath = SavetoFile(editText.getText().toString(),false).getPath();
                 Toast.makeText(ScanResult.this,"Saved",Toast.LENGTH_LONG).show();
@@ -107,9 +94,21 @@ public class ScanResult extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                EditText editText = (EditText)findViewById(R.id.scan_result);
+
                 editText.setText(orig);
                 atTrans = false;
+            }
+        });
+
+        final CheckBox checkBox = (CheckBox)findViewById(R.id.auto_correct);
+        checkBox.setOnClickListener(new CheckBox.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if(checkBox.isChecked()){
+//                    autoC = true;
+                    translator.autoCorrect(editText.getText().toString());
+                }
+                else if(orig!=null)editText.setText(orig);
             }
         });
 
@@ -120,14 +119,16 @@ public class ScanResult extends Activity {
                 if(msg.arg1 == Translator.MESSAGE_AUTOCORRECT) {
                     //editText.setText((String) msg.obj);
                     System.out.println("received autocorrect msg" + (String) msg.obj);
+                    editText.setText((String)msg.obj);
                 }
                 else if(msg.arg1 == Translator.MESSAGE_TRANSLATE){
 
                     System.out.println("received translate msg");
+                    editText.setText((String) msg.obj);
                 } else {
 
                     System.out.println("received lookup msg");
-                    editText.setText((String) msg.obj);
+
                 }
             }
         };
