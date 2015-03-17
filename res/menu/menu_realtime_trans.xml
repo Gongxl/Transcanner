@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ece251.gongxl.transcanner.DicActivity">
+    <item android:id="@+id/jump_dic" android:title="Words"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/back_home" android:title="Main Menu"
+        android:orderInCategory="100" app:showAsAction="never" />
+</menu>

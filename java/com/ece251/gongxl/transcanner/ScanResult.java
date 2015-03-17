@@ -24,6 +24,8 @@ public class ScanResult extends Activity {
     Handler handler;
     String orig;
     Boolean atTrans = false;
+    private Handler trans_handler;
+    private Translator translator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,15 +51,6 @@ public class ScanResult extends Activity {
         });
 
 
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-
-                editText.setText((String) msg.obj);
-            }
-        };
-        
         ImageButton b2 = (ImageButton)findViewById(R.id.translate);
         b2.setOnClickListener(new Button.OnClickListener() {
 
@@ -72,7 +65,7 @@ public class ScanResult extends Activity {
                             try {
                                 if(!atTrans) {
                                     orig = editText.getText().toString();
-                                    String translated = Translator.translate(editText.getText().toString());
+                                    String translated = translator.lookupDictionary(editText.getText().toString());
                                     Message message = Message.obtain();
                                     message.obj = translated;
                                     handler.sendMessage(message);
@@ -119,6 +112,27 @@ public class ScanResult extends Activity {
                 atTrans = false;
             }
         });
+
+        trans_handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if(msg.arg1 == Translator.MESSAGE_AUTOCORRECT) {
+                    //editText.setText((String) msg.obj);
+                    System.out.println("received autocorrect msg" + (String) msg.obj);
+                }
+                else if(msg.arg1 == Translator.MESSAGE_TRANSLATE){
+
+                    System.out.println("received translate msg");
+                } else {
+
+                    System.out.println("received lookup msg");
+                    editText.setText((String) msg.obj);
+                }
+            }
+        };
+        translator = new Translator(getApplicationContext(), trans_handler);
+
     }
 
 

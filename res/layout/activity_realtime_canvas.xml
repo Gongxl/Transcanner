@@ -31,17 +31,18 @@
             android:layout_weight="1.0"
             android:src="@drawable/brush_green"
             android:background="@android:color/transparent"/>
-        <ImageButton android:id="@+id/brush_black"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1.0"
-            android:src="@drawable/brush_yellow"
-            android:background="@android:color/transparent"/>
+
         <ImageButton android:id="@+id/brush_red"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
             android:src="@drawable/brush_red"
+            android:background="@android:color/transparent"/>
+        <ImageButton android:id="@+id/brush_black"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:src="@drawable/brush_sticker"
             android:background="@android:color/transparent"/>
         <ImageButton android:id="@+id/brush_small"
             android:layout_width="0dp"
@@ -49,7 +50,7 @@
             android:scaleType="centerInside"
             android:layout_weight="1.0"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/dot"
+            android:src="@drawable/dot2"
             android:background="@android:color/transparent"/>
         <ImageButton android:id="@+id/brush_middle"
             android:layout_width="0dp"
@@ -57,7 +58,7 @@
             android:scaleType="centerInside"
             android:layout_weight="1.0"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/dot"
+            android:src="@drawable/dot2"
             android:background="@android:color/transparent"/>
         <ImageButton android:id="@+id/brush_large"
             android:layout_width="0dp"
@@ -65,7 +66,7 @@
             android:scaleType="centerInside"
             android:layout_weight="1.0"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/dot"
+            android:src="@drawable/dot2"
             android:background="@android:color/transparent"/>
 
 

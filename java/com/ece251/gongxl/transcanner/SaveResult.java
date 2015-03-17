@@ -108,8 +108,8 @@ public class SaveResult extends Activity {
 
 
                 Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_SUBJECT, "subject");
-                intent.putExtra(Intent.EXTRA_TEXT, "body");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "File from TRANSANNER");
+                intent.putExtra(Intent.EXTRA_TEXT, "Sent From TRANSANNER");
                 intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filepath));//file path
                 intent.setType("image/*");
                 intent.setType("message/rfc882");

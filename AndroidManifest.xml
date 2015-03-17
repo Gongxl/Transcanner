@@ -46,7 +46,7 @@
         </activity>
         <activity
             android:name=".RealtimeActivity"
-            android:label="RealtimeActivity" >
+            android:label="Translate Sentences" >
         </activity>
         <activity
             android:name=".ImportActivity"
@@ -59,11 +59,19 @@
         <activity
             android:name=".ListDeviceActivity"
             android:label="@string/title_activity_list_device"
-            android:theme="@android:style/Theme.Holo.Dialog">
+            android:theme="@android:style/Theme.Holo.Dialog" >
         </activity>
         <activity
             android:name=".RealtimeCanvas"
             android:label="@string/title_activity_realtime_canvas" >
+        </activity>
+        <activity
+            android:name=".TransMode"
+            android:label="@string/title_activity_trans_mode" >
+        </activity>
+        <activity
+            android:name=".DicActivity"
+            android:label="@string/title_activity_dic" >
         </activity>
     </application>
 
