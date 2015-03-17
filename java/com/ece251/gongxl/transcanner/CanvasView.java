@@ -161,6 +161,7 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void syncDrawing(Drawing drawing) {
+        System.out.println(drawing.toString());
         bluetoothService.send(drawing.toString());
         this.curve = null;
     }
