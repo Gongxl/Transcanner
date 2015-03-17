@@ -176,8 +176,8 @@ public class RealtimeActivity extends ActionBarActivity {
                             //mCamera.autoFocus(myAutoFocusCallback);
                             mCamera.setPreviewCallback(new Camera.PreviewCallback() {
                                 public void onPreviewFrame(byte[] data, Camera camera) {
-                                    if(frameCount ++ != 10) return;
-                                    frameCount = 0;
+//                                    if(frameCount ++ != 10) return;
+//                                    frameCount = 0;
                                     Camera.Parameters parameters = camera.getParameters();
                                     int width = parameters.getPreviewSize().width;
                                     int height = parameters.getPreviewSize().height;
