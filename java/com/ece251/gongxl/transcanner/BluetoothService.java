@@ -503,17 +503,18 @@ public class BluetoothService {
             boolean imageFlag = false;
             FileOutputStream imageOut = null;
             // Keep listening to the InputStream while connected
-            while (true) {
-                try {
+
+            try {
+                while (true) {
                     // Read from the InputStream
                     bytes = inputStream.read(buffer);
 
                     String text = new String(Arrays.copyOf(buffer, bytes),
                             "UTF-8");
                     System.out.println("received message" + text);
-                    if(fileFlag) {
+                    if (fileFlag) {
                         StringBuilder stringBuilder = new StringBuilder();
-                        while(!text.startsWith("EOF")) {
+                        while (!text.startsWith("EOF")) {
                             stringBuilder.append(text);
                             bytes = inputStream.read(buffer);
                             text = new String(Arrays.copyOf(buffer, bytes),
@@ -524,37 +525,37 @@ public class BluetoothService {
                         syncMessage(MESSAGE_READ, stringBuilder.toString());
                         continue;
                     }
-                    if(imageFlag) {
-                        while((bytes = inputStream.read(buffer)) != -1)
+                    if (imageFlag) {
+                        while ((bytes = inputStream.read(buffer)) != -1)
                             imageOut.write(buffer, 0, bytes);
                         imageFlag = false;
                         syncMessage(MESSAGE_IMAGE, null);
                     }
-                    if(text.startsWith("SOF"))
+                    if (text.startsWith("SOF"))
                         fileFlag = true;
-                    else if(text.startsWith("DRAWING"))
+                    else if (text.startsWith("DRAWING"))
                         syncMessage(MESSAGE_DRAWING, text);
-                    else if(text.startsWith("SOI")) {
+                    else if (text.startsWith("SOI")) {
                         imageFlag = true;
                         imageOut = new FileOutputStream(
                                 new File("/mnt/sdcard/recv_image.jpg"));
                     }
-                    // Send the obtained bytes to the UI Activity
-                    //syncMessage(MESSAGE_READ, text);
+
+                }
+                // Send the obtained bytes to the UI Activity
+                //syncMessage(MESSAGE_READ, text);
+            } catch (IOException e) {
+                // Send a failure message back to the Activity
+                syncMessage(MESSAGE_CONNECTION_LOST, null);
+                // restart listening mode
+                startListening();
+            } finally {
+                try {
+                    inputStream.close();
+                    if (imageOut != null)
+                        imageOut.close();
                 } catch (IOException e) {
-                    // Send a failure message back to the Activity
-                    syncMessage(MESSAGE_CONNECTION_LOST, null);
-                    // restart listening mode
-                    startListening();
-                    break;
-                } finally {
-                    try {
-                        inputStream.close();
-                        if(imageOut != null)
-                            imageOut.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    e.printStackTrace();
                 }
             }
         }
