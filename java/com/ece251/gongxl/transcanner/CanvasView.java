@@ -28,9 +28,9 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
     private BluetoothService bluetoothService;
     private Handler handler;
 
-    public final static int PAINT_STROKE_SMALL = 1;
-    public final static int PAINT_STROKE_MEDIUM = 3;
-    public final static int PAINT_STROKE_BIG = 5;
+    public final static int PAINT_STROKE_SMALL = 2;
+    public final static int PAINT_STROKE_MEDIUM = 4;
+    public final static int PAINT_STROKE_BIG = 6;
 
     public final static int DRAW_TYPE_LINE = 0;
     public final static int DRAW_TYPE_CURVE = 1;

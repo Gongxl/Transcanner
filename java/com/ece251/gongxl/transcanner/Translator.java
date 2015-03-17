@@ -87,8 +87,11 @@ public class Translator {
                     System.out.println("nothing there");
                     return;
                 }
-            } else corrected = this.word;
-
+            } else corrected = trimSentence(this.word);
+            if(corrected.equals("")) {
+                System.out.println("nothing there");
+                return;
+            }
             String url = DICTIONARY_URL + "?client_id=" + API_KEY
                     + "&from=" + AUTO + "&to=" + AUTO + "&q=" + URLEncoder.encode(corrected);
             HttpGet getRequest = new HttpGet(url);
@@ -125,6 +128,17 @@ public class Translator {
         }
     }
 
+    private String trimSentence(String sentence) {
+        int firstSymbol = 0;
+        for(firstSymbol = 0;
+            firstSymbol < sentence.length();
+            firstSymbol ++) {
+            if(!isAlphabet(sentence.charAt(firstSymbol)))
+                break;
+        }
+        return sentence.substring(0, firstSymbol);
+    }
+
     public void translate(String toTranslate, boolean autoCorrection) {
         if(toTranslate == null || toTranslate.equals("")) return;
         new TranslationThread(toTranslate.toLowerCase(), autoCorrection).start();
@@ -146,11 +160,11 @@ public class Translator {
             String corrected = null;
             if (autoCorrection) {
                 corrected = spellCorrect(toTranslate);
-                if(corrected.equals("")) {
-                    System.out.println("nothing there");
-                    return;
-                }
-            } else corrected = this.toTranslate;
+            } else corrected = trimSentence(this.toTranslate);
+            if(corrected.equals("")) {
+                System.out.println("nothing there");
+                return;
+            }
             String url = TRANSLATE_URL + "?client_id=" + API_KEY
                     + "&from=" + AUTO + "&to=" + AUTO + "&q=" + URLEncoder.encode(corrected);
             HttpGet getRequest = new HttpGet(url);
@@ -207,10 +221,16 @@ public class Translator {
         return correctedSentence;
     }
 
+    private static boolean isAlphabet(char ch) {
+        if(ch >= 'A' && ch <= 'z')
+            return true;
+        else return false;
+    }
+
     private static String filterSymbol(String word) {
         char[] newWord = word.toCharArray();
         for(int i = 0; i < newWord.length; i ++) {
-            if(!Character.isAlphabetic(newWord[i]))
+            if(!isAlphabet(newWord[i]))
                 newWord[i] = 'e';
         }
         return new String(newWord);
@@ -310,9 +330,6 @@ public class Translator {
         reader.endObject();
         return meaning.toString();
     }
-
-
-
 
     private String extractTranslation(JsonReader reader) throws IOException {
         reader.beginArray();
