@@ -7,6 +7,8 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.PictureCallback;
@@ -62,10 +64,14 @@ public class CameraActivity extends Activity {
                             PictureCallback mPicture = new PictureCallback() {
                                 @Override
                                 public void onPictureTaken(byte[] data, Camera camera) {
-
+//                                    Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
+//                                    Matrix matrix = new Matrix();
+//                                    matrix.preRotate(360);
+//                                    bitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
                                     try {
                                         FileOutputStream fos = new FileOutputStream("/mnt/sdcard/test.jpg");
                                         //image = BitmapFactory.decodeByteArray(data , 0, data.length);
+//                                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,fos);
                                         fos.write(data);
                                         fos.close();
 

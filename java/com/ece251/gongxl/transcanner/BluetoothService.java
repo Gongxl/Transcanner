@@ -513,14 +513,17 @@ public class BluetoothService {
                             "UTF-8");
                     System.out.println("received message" + text);
                     if (fileFlag) {
+                        System.out.println("fileFlag on");
                         StringBuilder stringBuilder = new StringBuilder();
-                        while (!text.startsWith("EOF")) {
+                        while (!text.contains("EOF")) {
                             stringBuilder.append(text);
                             bytes = inputStream.read(buffer);
                             text = new String(Arrays.copyOf(buffer, bytes),
                                     "UTF-8");
+                            System.out.println("in loop:" + text);
                         }
                         fileFlag = false;
+                        System.out.println("out of loop");
                         ScanResult.SavetoFile(stringBuilder.toString(), true);
                         syncMessage(MESSAGE_READ, stringBuilder.toString());
                         continue;
@@ -531,8 +534,15 @@ public class BluetoothService {
                         imageFlag = false;
                         syncMessage(MESSAGE_IMAGE, null);
                     }*/
-                    if (text.startsWith("SOF"))
-                        fileFlag = true;
+                    if (text.startsWith("SOF")) {
+                        if(text.contains("EOF")) {
+                            String body = text.substring(3, text.indexOf("EOF"));
+                            ScanResult.SavetoFile(body, true);
+                            syncMessage(MESSAGE_READ, body);
+                        } else {
+                            fileFlag = true;
+                        }
+                    }
                     else if (text.startsWith("DRAWING")) {
                         StringBuilder sb = new StringBuilder();
                         while (!text.endsWith("ENDDRAWING")) {

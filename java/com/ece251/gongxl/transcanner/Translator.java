@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by david on 2/27/15.
@@ -160,7 +162,8 @@ public class Translator {
             String corrected = null;
             if (autoCorrection) {
                 corrected = spellCorrect(toTranslate);
-            } else corrected = trimSentence(this.toTranslate);
+            } //else corrected = trimSentence(this.toTranslate);
+            else corrected = this.toTranslate;
             if(corrected.equals("")) {
                 System.out.println("nothing there");
                 return;
@@ -200,15 +203,21 @@ public class Translator {
     }
 
     public String spellCorrect(String sentence) {
-        String[] words = sentence.split(" ");
-        TextInfo[] sentencesText = new TextInfo[words.length];
+        String[] words = sentence.split("\\s+");
+        List<String> newWordList = new ArrayList<String>();
         for(int i = 0; i < words.length; i ++) {
-            words[i] = filterSymbol(words[i]);
-            System.out.println(words[i]);
+            System.out.println("newWord" + words[i]);
+            String newWord = filterSymbol(words[i].trim());
+            if(!newWord.equals("")) {
+                newWordList.add(newWord);
+            }
         }
-        for(int i = 0; i < words.length;i ++)
-            sentencesText[i] = new TextInfo(words[i]);
-        spellCheckerSession.getSentenceSuggestions(sentencesText, 1);
+        TextInfo[] sentences = new TextInfo[newWordList.size()];
+        for(int i = 0; i < newWordList.size(); i ++) {
+            System.out.println("processed" + newWordList.get(i));
+            sentences[i] = new TextInfo(newWordList.get(i));
+        }
+        spellCheckerSession.getSentenceSuggestions(sentences, 1);
         while(true) {
             synchronized (this) {
                 if (correctedSentence != null) break;
@@ -222,7 +231,12 @@ public class Translator {
     }
 
     private static boolean isAlphabet(char ch) {
-        if(ch >= 'A' && ch <= 'z')
+        if((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+            return true;
+        else return false;
+    }
+    private static boolean isDigit(char ch) {
+        if(ch >= '0' && ch <= '9')
             return true;
         else return false;
     }
@@ -230,7 +244,7 @@ public class Translator {
     private static String filterSymbol(String word) {
         char[] newWord = word.toCharArray();
         for(int i = 0; i < newWord.length; i ++) {
-            if(!isAlphabet(newWord[i]))
+            if(!isAlphabet(newWord[i]) && !isDigit(newWord[i]))
                 newWord[i] = 'e';
         }
         return new String(newWord);

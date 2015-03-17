@@ -58,7 +58,7 @@ public class RealtimeActivity extends ActionBarActivity {
     private Translator translator;
     public static final String DATA_PATH = Environment
             .getExternalStorageDirectory().toString() + "/SimpleAndroidOCR/";
-
+    private Camera.AutoFocusCallback myAutoFocusCallback = null;
     public static final String lang = "eng";
     private static final String TAG = "RealtimeActivity.java";
     public TessBaseAPI baseApi;
@@ -173,7 +173,7 @@ public class RealtimeActivity extends ActionBarActivity {
                             baseApi = new TessBaseAPI();
                             baseApi.setDebug(true);
                             baseApi.init(DATA_PATH, lang);
-                            //mCamera.autoFocus(myAutoFocusCallback);
+                            mCamera.autoFocus(myAutoFocusCallback);
                             mCamera.setPreviewCallback(new Camera.PreviewCallback() {
                                 public void onPreviewFrame(byte[] data, Camera camera) {
 //                                    if(frameCount ++ != 10) return;
@@ -182,7 +182,7 @@ public class RealtimeActivity extends ActionBarActivity {
                                     int width = parameters.getPreviewSize().width;
                                     int height = parameters.getPreviewSize().height;
                                     YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
-
+                                    //mCamera.autoFocus(myAutoFocusCallback);
                                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                                     yuv.compressToJpeg(new Rect(0, 0, width, height), 50, out);
 
@@ -211,14 +211,33 @@ public class RealtimeActivity extends ActionBarActivity {
                             button_back.setText("Start");
                             mode = 0;
                             Intent intent = new Intent();
-                            intent.setClass(RealtimeActivity.this, CameraActivity.class);
+                            intent.setClass(RealtimeActivity.this,MainMenu.class);
                             startActivity(intent);
                             finish();
                         }
                     }
                 }
         );
+        myAutoFocusCallback = new Camera.AutoFocusCallback() {
 
+            public void onAutoFocus(boolean success, Camera camera) {
+                // TODO Auto-generated method stub
+                if(success)//success表示对焦成功
+                {
+                    Log.i("TAG", "myAutoFocusCallback: success...");
+                    //myCamera.setOneShotPreviewCallback(null);
+
+                }
+                else
+                {
+                    //未对焦成功
+                    Log.i("TAG", "myAutoFocusCallback: fail...");
+
+                }
+
+
+            }
+        };
     }
 
     public static Bitmap createPhotos(Bitmap bitmap) {
