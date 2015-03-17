@@ -218,8 +218,8 @@ public class CanvasView extends SurfaceView implements SurfaceHolder.Callback {
         int count = 0;
         Drawing drawing = new Drawing(width, color);
         for(String coordinate : coordinates) {
+            System.out.println("coordinate" + coordinate);
             String[] cord = coordinate.split(",");
-            if(cord.length < 2) continue;
             float x = Float.valueOf(cord[0]);
             float y = Float.valueOf(cord[1]);
             if(count == 0)
